@@ -8,40 +8,35 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+@Table(name = "role")
+public class Role extends ClassEntity{
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	
+	@Size(max = 100)
+	@Column(name = "NAME", length = 100)
 	private String name;
 	
-	@NotBlank
-	@Size(max = 3)
-	private String status;
 	
-	
-	@Column(name = "DATE_CREATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateCreation;
-	
-	@Column(name = "DATE_MODIFICATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateModification;
-	
-	@Column(name = "DATE_DESACTIVATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateDesactivation;
-
+	public Role(Long id, String name,String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
+        super(libelle,code, statut, dateCreation, dateModification, dateDesactivation); 
+        this.id = id;
+        this.name = name;
+    }
 }

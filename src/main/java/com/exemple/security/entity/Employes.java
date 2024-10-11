@@ -2,38 +2,44 @@ package com.exemple.security.entity;
 
 import java.util.Date;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.JoinColumn;
+
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Employes {
+@Table(name = "employes")
+public class Employes extends ClassEntity{
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="AGENCES_ID", nullable=false)
-    private Agences agences;
+    @JoinColumn(name="AFFECTATIONS_ID")
+    private Affectations affectations;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="FONCTIONS_ID", nullable=false)
+    @JoinColumn(name="FONCTIONS_ID")
     private Fonctions fonctions;
 
 	@Size(max = 50)
@@ -45,7 +51,7 @@ public class Employes {
 	private String prenom;
 	
 	@Size(max = 20)
-	@Column(name="MATRICULE", length = 20)
+	@Column(name="MATRICULE", length = 20 , unique = true)
 	private String matricule;
 	
 	@Size(max = 20)
@@ -65,19 +71,19 @@ public class Employes {
 	@Column(name="EMAIL", length = 50)
 	private String email;
 	
-	@Size(max = 3)
-	@Column(name="STATUT", length = 3)
-	private String statut;
-	 
-	@Column(name = "DATE_CREATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateCreation;
 	
-	@Column(name = "DATE_MODIFICATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateModification;
-	
-	@Column(name = "DATE_DESACTIVATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateDesactivation;
+	public Employes(Long id, Affectations affectations,Fonctions fonctions,String nom, String prenom, String matricule,String cin, String adresse, String telephone, String email,String libelle,String code,String statut,Date dateCreation,Date dateModification,Date dateDesactivation)
+	{
+		super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
+		this.id=id;
+		this.affectations = affectations;
+		this.fonctions = fonctions;
+		this.nom = nom;
+		this.prenom=prenom;
+		this.matricule = matricule;
+		this.cin =cin;
+		this.adresse = adresse;
+		this.telephone = telephone;
+		this.email = email;
+	}
 }

@@ -13,10 +13,10 @@ import com.exemple.security.playload.JwtAythentication;
 import com.exemple.security.playload.RefreshTokenRequest;
 import com.exemple.security.playload.SingInRequest;
 import com.exemple.security.playload.SingUpRequest;
-import com.exemple.security.playload.UserDTO;
 import com.exemple.security.security.AuthentificationServices;
 import com.exemple.security.security.UserPrincipal;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,26 +32,26 @@ public class AuthenticationController {
     }
 	
 	@PostMapping("/singup")
-	public ResponseEntity<UserPrincipal> singUp(@RequestBody SingUpRequest singUpRequest)
+	public ResponseEntity<UserPrincipal> singUp(@Valid @RequestBody SingUpRequest singUpRequest)
 	{
 		
 		return ResponseEntity.ok(authentificationServices.singup(singUpRequest));
 	}
 	
 	@PostMapping("/signIn")
-	public ResponseEntity<JwtAythentication> singIn(@RequestBody SingInRequest singInRequest)
+	public ResponseEntity<JwtAythentication> singIn(@Valid @RequestBody SingInRequest singInRequest)
 	{
 		return ResponseEntity.ok(authentificationServices.singIn(singInRequest));
 	}
 	
 	@PostMapping("/refresh")
-	public ResponseEntity<JwtAythentication> singIn(@RequestBody RefreshTokenRequest refreshTokenRequest)
+	public ResponseEntity<JwtAythentication> singIn(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest)
 	{
 		return ResponseEntity.ok(authentificationServices.refreshToken(refreshTokenRequest));
 	}
 	
 	@PostMapping("/user")
-	public ResponseEntity<User> getUser(@RequestBody SingInRequest singInRequest)
+	public ResponseEntity<User> getUser(@Valid @RequestBody SingInRequest singInRequest)
 	{
 		User user = authentificationServices.getUser(singInRequest.getEmail());
 		return new ResponseEntity<User>(user,HttpStatus.OK);

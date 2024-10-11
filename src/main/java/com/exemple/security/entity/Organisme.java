@@ -2,64 +2,58 @@ package com.exemple.security.entity;
 
 import java.util.Date;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 
-import jakarta.persistence.Column;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
-public class Organisme {
+@AllArgsConstructor
+@Table(name = "organisme")
+public class Organisme extends ClassEntity{
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
-	@NotBlank
-	@Size(max = 100)
-	private String libelle;
 	
-	@NotBlank
+
 	@Size(max = 200)
 	private String adresse;
 	
-	@NotBlank
+
 	@Size(max = 30)
 	private String telephone;
 	
-	@NotBlank
+
 	@Size(max = 50)
 	private String email;
 	
-	@NotBlank
+
 	@Size(max = 30)
 	private String fax;
 	
-	@NotBlank
-	@Size(max = 3)
-	private String statut;
+	public Organisme(Long id, String adresse , String telephone, String email, String fax,String libelle,String statut,String code,Date dateCreation,Date dateModification, Date dateDesactivation)
+	{
+		super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
+		this.id = id;
+		this.adresse = adresse;
+		this.telephone = telephone;
+		this.email = email;
+		this.fax = fax;
+	}
 	
-	@Column(name = "DATE_CREATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateCreation;
-	
-	@Column(name = "DATE_MODIFICATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateModification;
-	
-	@Column(name = "DATE_DESACTIVATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateDesactivation;
 }

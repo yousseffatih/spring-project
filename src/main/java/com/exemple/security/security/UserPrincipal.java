@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.exemple.security.entity.User;
 
-import lombok.Data;
+
 
 
 public class UserPrincipal implements UserDetails{

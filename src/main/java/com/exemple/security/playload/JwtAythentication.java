@@ -3,7 +3,6 @@ package com.exemple.security.playload;
 
 import java.util.List;
 
-import com.exemple.security.entity.Agences;
 
 import lombok.Data;
 
@@ -12,7 +11,7 @@ public class JwtAythentication {
 
 	private String token;
 	private String refrechToken;
-	private Integer idUser;
+	private Long idUser;
 	private Long idEmploye;
 	private String employe;
 	private String emailEmploye;

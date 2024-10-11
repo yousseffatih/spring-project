@@ -4,56 +4,32 @@ import java.util.Date;
 
 
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Villes {
+@Table(name = "villes")
+public class Villes extends ClassEntity{
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-
-	@NotBlank
-	@Size(max = 100)
-	@Column(name="LIBELLE")
-	private String libelle;
-	
-	@NotBlank
-	@Size(max = 20)
-	@Column(name="CODE")
-	private String code;
-	
-	@NotBlank
-	@Size(max = 3)
-	@Column(name="STATUT")
-	private String statut;
-	
-	
-	@Column(name = "DATE_CREATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateCreation;
-	
-	@Column(name = "DATE_MODIFICATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateModification;
-	
-	@Column(name = "DATE_DESACTIVATION")
-	//@Temporal(TemporalType.TIMESTAMP)
-	private Date dateDesactivation;
+	public Villes(Long id, String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
+        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation); 
+        this.id = id;
+    }	
 }

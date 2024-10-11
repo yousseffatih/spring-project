@@ -4,8 +4,9 @@ import java.util.List;
 
 
 import com.exemple.security.entity.Villes;
-import com.exemple.security.playload.PageableResponseDTO;
-import com.exemple.security.playload.VillesDTO;
+import com.exemple.security.playload.dto.PageableResponseDTO;
+import com.exemple.security.playload.dto.VillesDTO;
+
 
 
 public interface InVillesServices {

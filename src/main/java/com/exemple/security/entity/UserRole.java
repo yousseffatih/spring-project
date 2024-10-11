@@ -1,18 +1,21 @@
 package com.exemple.security.entity;
 
+import java.util.Date;
+
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_role")
-public class UserRole {
+@Table(name = "users_role")
+public class UserRole extends ClassEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -22,7 +25,11 @@ public class UserRole {
     @JoinColumn(name = "role_id")
     private Role role;
     
-    
-    private String statut;
+    public UserRole(Long id, User user,Role role,String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
+        super(libelle,code, statut, dateCreation, dateModification, dateDesactivation); 
+        this.id = id;
+        this.user = user;
+        this.role = role;
+    }
 }
 

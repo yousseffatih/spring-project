@@ -2,29 +2,21 @@ package com.exemple.security.security;
 
 
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.exemple.security.entity.Role;
 import com.exemple.security.entity.User;
 import com.exemple.security.playload.JwtAythentication;
 import com.exemple.security.playload.RefreshTokenRequest;
-import com.exemple.security.playload.ResourceNotFoundException;
 import com.exemple.security.playload.ResourceNotFoundExceptionUsername;
 import com.exemple.security.playload.SingInRequest;
 import com.exemple.security.playload.SingUpRequest;
-import com.exemple.security.playload.UserDTO;
-import com.exemple.security.playload.UserWithRoleDTO;
 import com.exemple.security.repository.UserRepository;
 
 
@@ -54,8 +46,8 @@ public class AuthentificationServices {
 	{
 		User user = new User();
 		user.setUsername(singUpRequest.getUsername());
-		user.setUsername(singUpRequest.getEmail());
 		user.setPassword(passwordEncoder.encode(singUpRequest.getPassword()));
+		user.setDateCreation(new Date());
 		
 		User user1 = userRepository.save(user);
 		UserPrincipal userPrincipal = new UserPrincipal(user1);
@@ -79,8 +71,8 @@ public class AuthentificationServices {
 		jwtAythentication.setIdEmploye(user.getEmployes().getId());
 		jwtAythentication.setEmploye(user.getEmployes().getNom());
 		jwtAythentication.setEmailEmploye(user.getEmployes().getEmail());
-		jwtAythentication.setIdAgence(user.getEmployes().getAgences().getId());
-		jwtAythentication.setAgence(user.getEmployes().getAgences().getLibelle());
+		jwtAythentication.setIdAgence(user.getEmployes().getAffectations().getId());
+		jwtAythentication.setAgence(user.getEmployes().getAffectations().getLibelle());
 		jwtAythentication.setRoles(user.getRoles().stream().map(role -> role.getRole().getName()).collect(Collectors.toList()));
 		jwtAythentication.setToken(jwt);
 		jwtAythentication.setRefrechToken(refreshJwt);

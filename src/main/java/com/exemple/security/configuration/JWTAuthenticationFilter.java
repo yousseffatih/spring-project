@@ -39,8 +39,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
 		if(authHeader != null && authHeader.startsWith("Bearer ")) {
 			token = authHeader.substring(7);
 			username = jwtService.extractUserName(token);
-			System.out.println("this is  token passed in token =====>===>====>" + token);
-			System.out.println("this is  user name passed in token =====>===>====>" + username);
 			
 		}
 		
@@ -54,7 +52,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
 				SecurityContextHolder.getContext().setAuthentication(autToken);
 			}
 		}
-		
 		filterChain.doFilter(request, response);
 		
 	}

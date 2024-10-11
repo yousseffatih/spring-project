@@ -8,10 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.exemple.security.entity.Role;
+
 import com.exemple.security.entity.User;
 import com.exemple.security.entity.UserRole;
-import com.exemple.security.playload.ResourceNotFoundException;
 import com.exemple.security.repository.UserRepository;
 import com.exemple.security.repository.UserRoleRepository;
 import com.exemple.security.security.UserPrincipal;

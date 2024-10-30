@@ -23,27 +23,27 @@ import lombok.ToString;
 @AllArgsConstructor
 @Table(name = "org_exp_dest")
 public class OrgExpDest extends ClassEntity{
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 
 	@Size(max = 200)
 	private String adresse;
-	
+
 
 	@Size(max = 30)
 	private String telephone;
-	
+
 
 	@Size(max = 50)
 	private String email;
-	
+
 
 	@Size(max = 30)
 	private String fax;
-	
+
 	public OrgExpDest(Long id, String adresse , String telephone, String email, String fax,String libelle,String statut,String code,Date dateCreation,Date dateModification, Date dateDesactivation)
 	{
 		super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);

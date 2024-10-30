@@ -31,28 +31,28 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/reseaux")
 @RequiredArgsConstructor
 public class ReseauxController {
-	
-	
+
+
 	@Autowired
 	private InReseauxService reseauxService ;
-	
+
 	@Autowired
 	private ReseauxRepository reseauxRepository;
-	
-	
+
+
 	@GetMapping("/{id}")
 	private ResponseEntity<Reseaux> getVille(@PathVariable Long id)
 	{
 		Reseaux activites = reseauxService.getReseaux(id);
-		return new ResponseEntity<Reseaux>(activites, HttpStatus.OK);
+		return new ResponseEntity<>(activites, HttpStatus.OK);
 	}
-	
-	
+
+
 	@GetMapping("/all")
 	public List<Reseaux> getAllActivites() {
 		return reseauxService.getAllReseaux();
 	}
-	
+
 	 @GetMapping("/allPagable")
 	public ResponseEntity<PageableResponseDTO> getAllActivitesPageable(
 			@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
@@ -61,50 +61,44 @@ public class ReseauxController {
 		PageableResponseDTO activities = reseauxService.getAllReseauxPagebal(pageNo,pageSize);
 		return new ResponseEntity<>(activities , HttpStatus.OK);
 	}
-	 
+
 	 @GetMapping("/delete/{id}")
 	 public ResponseEntity<?> deleteVillesStatus(@PathVariable Long id)
 	 {
 		 reseauxService.deleteReseauxStatut(id);
-		 return new ResponseEntity<>(new MessageResponse("Reseaux supprimée.","success") , HttpStatus.OK);
+		 return new ResponseEntity<>(new MessageResponse("Réseau supprimé.","success") , HttpStatus.OK);
 	 }
-	 
+
 	 @PostMapping
 	 public ResponseEntity<?> addActivite(@Valid @RequestBody ReseauxDTO reseauxDTO)
 	 {
-		 if(reseauxRepository.existsByCodeAdd(reseauxDTO.getCode()))
-		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-		}
+
 		if(reseauxRepository.existsByLibelleAdd(reseauxDTO.getLibelle()))
 		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 		}
-		
+
 		ReseauxDTO reseaux = new ReseauxDTO();
 		reseaux.setCode(reseauxDTO.getCode());
 		reseaux.setLibelle(reseauxDTO.getLibelle());
-		
+
 		reseauxService.addReseaux(reseaux);
-		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Reseaux ajoutée.","success"));
+		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Réseau ajouté.","success"));
 	 }
-	 
+
 	 @PutMapping("/{id}")
 	    public ResponseEntity<?> updateActivites(@PathVariable Long id, @Valid @RequestBody ReseauxDTO reseauxDTO) {
-			if(reseauxRepository.existsByCodeModif(reseauxDTO.getCode(),id))
-			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-			}
+
 			if(reseauxRepository.existsByLibelleModif(reseauxDTO.getLibelle(), id))
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 			}
 			if(reseauxDTO.getStatut() == null || reseauxDTO.getStatut() == "")
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Statut est obligatoire !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le statut est obligatoire !" , "warning"));
 			}
 	        reseauxService.updateReseaux(id, reseauxDTO) ;
-	        return new ResponseEntity<>(new MessageResponse("Reseaux modifiée.","success"),HttpStatus.OK);
+	        return new ResponseEntity<>(new MessageResponse("Réseau modifié.","success"),HttpStatus.OK);
 	    }
 	 @GetMapping("/listReseaux")
 		public List<ListApis> getAllActivitesApis() {
@@ -112,7 +106,7 @@ public class ReseauxController {
 			List<ListApis> listApis = activites.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());
 			return listApis;
 		}
-	 
+
 		private ListApis mapToApisList(Reseaux activites)
 		{
 			ListApis listApis = new ListApis();
@@ -121,6 +115,6 @@ public class ReseauxController {
 			listApis.setLibelle(activites.getLibelle());
 			return listApis;
 		}
-	 
-	
+
+
 }

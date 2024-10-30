@@ -11,7 +11,7 @@ public class UserWithRoleDTO {
     private Integer roleId;
     private String roleName;
     private String roleStatus;
-    
+
     public UserWithRoleDTO(Integer idUser, String username, String email, String roleName, String roleStatus) {
         this.userId=idUser;
         this.username=username;
@@ -27,8 +27,8 @@ public class UserWithRoleDTO {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	
-	
+
+
 
 	public String getEmail() {
 		return email;
@@ -38,8 +38,8 @@ public class UserWithRoleDTO {
 		this.email = email;
 	}
 
-	
-	
+
+
 	public String getUsername() {
 		return username;
 	}
@@ -48,8 +48,8 @@ public class UserWithRoleDTO {
 		this.username = username;
 	}
 
-	
-	
+
+
 	public String getPassword() {
 		return password;
 	}
@@ -58,8 +58,8 @@ public class UserWithRoleDTO {
 		this.password = password;
 	}
 
-	
-	
+
+
 	public Integer getRoleId() {
 		return roleId;
 	}
@@ -68,8 +68,8 @@ public class UserWithRoleDTO {
 		this.roleId = roleId;
 	}
 
-	
-	
+
+
 	public String getRoleName() {
 		return roleName;
 	}
@@ -78,8 +78,8 @@ public class UserWithRoleDTO {
 		this.roleName = roleName;
 	}
 
-	
-	
+
+
 	public String getRoleStatus() {
 		return roleStatus;
 	}
@@ -87,6 +87,6 @@ public class UserWithRoleDTO {
 	public void setRoleStatus(String roleStatus) {
 		this.roleStatus = roleStatus;
 	}
-	
-	
+
+
 }

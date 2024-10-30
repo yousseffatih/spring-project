@@ -17,31 +17,31 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/userRoles")
 @RequiredArgsConstructor
-public class UserRolesController {	
-	
+public class UserRolesController {
+
 	@Autowired
 	private InUserRolesServices userRolesServices;
-	
+
 	@GetMapping("/affecteRoles")
 	public ResponseEntity<?> affectRoleToUser(
 			@RequestParam(value = "idUser" , required = true) Long idUser,
 			@RequestParam(value = "idRole"  , required = true) Long idRole) {
 		try {
 			userRolesServices.affectRoleToUser(idUser, idRole);
-			return new ResponseEntity<>(new MessageResponse("Role affectée","Success"),HttpStatus.OK);
+			return new ResponseEntity<>(new MessageResponse("Rôle affecté","Success"),HttpStatus.OK);
 		} catch (CustomException e) {
 			return new ResponseEntity<>(new MessageResponse(e.getMessage(),"warning"),HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	
+
+
 	@GetMapping("/unAffecteRoles")
 	public ResponseEntity<?> unAffectRoleToUser(
 			@RequestParam(value = "idUser" , required = true) Long idUser,
 			@RequestParam(value = "idRole"  , required = true) Long idRole) {
 		try {
 			userRolesServices.unaffectRoleToUser(idUser, idRole);
-			return new ResponseEntity<>(new MessageResponse("Role non affectée","Success"),HttpStatus.OK);
+			return new ResponseEntity<>(new MessageResponse("Rôle non affecté.","Success"),HttpStatus.OK);
 		} catch (CustomException e) {
 			return new ResponseEntity<>(new MessageResponse(e.getMessage(),"warning"),HttpStatus.BAD_REQUEST);
 		}

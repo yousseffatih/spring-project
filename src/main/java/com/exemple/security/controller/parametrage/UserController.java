@@ -18,17 +18,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-	
+
 	@Autowired
 	private InUserService userService;
-	
+
 	@GetMapping("/listUsers")
 	public List<ListApis> getAllActivitesApis() {
 		List<User> users  = userService.getUsers();
 		List<ListApis> listApis = users.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());
 		return listApis;
 	}
- 
+
 	private ListApis mapToApisList(User user)
 	{
 		ListApis listApis = new ListApis();

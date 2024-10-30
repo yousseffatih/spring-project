@@ -3,7 +3,6 @@ package com.exemple.security.playload;
 
 import java.util.List;
 
-
 import lombok.Data;
 
 @Data

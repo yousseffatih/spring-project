@@ -31,72 +31,66 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/fonctions")
 @RequiredArgsConstructor
 public class FonctionsController {
-	
-	@Autowired 
+
+	@Autowired
 	private InFonctionsServices fonctionsServices;
-	
-	@Autowired 
+
+	@Autowired
 	private FonctionsRepository fonctionsRepository;
-	
-	
-	
+
+
+
 	@PostMapping
 	private ResponseEntity<?> addFonctions(@Valid @RequestBody FonctionsDTO fonctionsDTO)
 	{
-		if(fonctionsRepository.existsByCodeAdd(fonctionsDTO.getCode()))
-		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà!" , "warning"));
-		}
+
 		if(fonctionsRepository.existsByLibelleAdd(fonctionsDTO.getLibelle()))
 		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 		}
-		
+
 		fonctionsServices.addFonctions(fonctionsDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Fonction ajoutée.","success"));
 	}
-	
+
 	@GetMapping("/{id}")
 	private ResponseEntity<Fonctions> getFonctions(@PathVariable Long id)
 	{
 		Fonctions fonctions = fonctionsServices.getFonctions(id);
-		return new ResponseEntity<Fonctions>(fonctions, HttpStatus.OK);
+		return new ResponseEntity<>(fonctions, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/all")
 	private ResponseEntity<List<Fonctions>> getAllVillesEntity()
 	{
 		List<Fonctions> fonctions = fonctionsServices.getAllFonctions();
 		return new ResponseEntity<>(fonctions , HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/{id}")
     public ResponseEntity<?> updateVille(@PathVariable Long id,@Valid @RequestBody FonctionsDTO fonctionsDTO) {
-		if(fonctionsRepository.existsByCodeModif(fonctionsDTO.getCode(),id))
-		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-		}
+
 		if(fonctionsRepository.existsByLibelleModif(fonctionsDTO.getLibelle(), id))
 		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 		}
 		if(fonctionsDTO.getStatut() == null || fonctionsDTO.getStatut() == "")
 		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Statut est obligatoire !" , "warning"));
+			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le statut est obligatoire !" , "warning"));
 		}
 		Fonctions updateFonctions = fonctionsServices.updateFonctions(id, fonctionsDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Fonction modifiée.","success"));
     }
-	
 
-	 
+
+
 	 @GetMapping("/delete/{id}")
 	 public ResponseEntity<?> deleteFonctionsStatus(@PathVariable Long id)
 	 {
 		 fonctionsServices.deleteFonctionsStatus(id);
 		 return new ResponseEntity<>(new MessageResponse("Fonction supprimée.","success") , HttpStatus.OK);
 	 }
-	 
+
 	 @GetMapping("/allPagable")
 		private ResponseEntity<PageableResponseDTO> getAllVillesPageable(
 				@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
@@ -105,14 +99,14 @@ public class FonctionsController {
 			PageableResponseDTO fonctions = fonctionsServices.getAllFonctionsPagebal(pageNo,pageSize);
 			return new ResponseEntity<>(fonctions , HttpStatus.OK);
 		}
-	 
+
 	 @GetMapping("/listFonctions")
 		public List<ListApis> getAllActivitesApis() {
 			List<Fonctions> activites  = fonctionsServices.getAllFonctions();
 			List<ListApis> listApis = activites.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());
 			return listApis;
 		}
-	 
+
 		private ListApis mapToApisList(Fonctions activites)
 		{
 			ListApis listApis = new ListApis();
@@ -121,8 +115,8 @@ public class FonctionsController {
 			listApis.setLibelle(activites.getLibelle());
 			return listApis;
 		}
-		
-		
-		
-	 
+
+
+
+
 }

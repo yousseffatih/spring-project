@@ -7,16 +7,24 @@ import lombok.Data;
 
 @Data
 public class GetCourrierBody {
-	private String nCourrier; 
-	private Long idOrgExpDestSrc; 
+
+	private String nCourrier;
+
+	private Long idOrgExpDestSrc;
+
 	private Long idOrgExpDestCible;
+
 	private Long typeCourriersId;
+
 	@NotNull(message = "Date debut  est obligatoire!")
 	@NotEmpty(message = "Date debut  est obligatoire!")
-	private String dateDebut; 
+	private String dateDebut;
+
 	@NotNull(message = "Date fin  est obligatoire!")
 	@NotEmpty(message = "Date fin  est obligatoire!")
-	private String dateFin; 
+	private String dateFin;
+
 	private Long idProcessusModel;
+
 	private Long idTypeCourriers;
 }

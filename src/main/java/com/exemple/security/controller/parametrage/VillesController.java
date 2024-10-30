@@ -33,21 +33,18 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/villes")
 @RequiredArgsConstructor
 public class VillesController {
-	
-		@Autowired 
+
+		@Autowired
 		private InVillesServices villesServices;
-		
-		@Autowired 
+
+		@Autowired
 		private VillesRepository villesRepository;
-	
-	
+
+
 		@PostMapping
 		private ResponseEntity<?> addVilles(@Valid @RequestBody VillesDTO villes)
 		{
-			if(villesRepository.existsByCodeAdd(villes.getCode()))
-			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà!" , "warning"));
-			}
+
 			if(villesRepository.existsByLibelleAdd(villes.getLibelle()))
 			{
 				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
@@ -55,47 +52,44 @@ public class VillesController {
 			villesServices.addVilles(villes);
 			return new ResponseEntity<>(new MessageResponse("Ville ajoutée.","success"),HttpStatus.OK);
 		}
-	
+
 		@GetMapping("/{id}")
 		private ResponseEntity<Villes> getVille(@PathVariable Long id)
 		{
 			Villes villes = villesServices.getVille(id);
-			return new ResponseEntity<Villes>(villes, HttpStatus.OK);
+			return new ResponseEntity<>(villes, HttpStatus.OK);
 		}
-	
+
 		@GetMapping("/all")
 		private ResponseEntity<List<Villes>> getAllVillesEntity()
 		{
 			List<Villes> villes = villesServices.getAllVilles();
 			return new ResponseEntity<>(villes , HttpStatus.OK);
 		}
-	
+
 		@PutMapping("/{id}")
 	    public ResponseEntity<?> updateVille(@PathVariable Long id,@Valid @RequestBody VillesDTO villes) {
-			if(villesRepository.existsByCodeModif(villes.getCode(),id))
-			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-			}
+
 			if(villesRepository.existsByLibelleModif(villes.getLibelle(), id))
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 			}
 			if(villes.getStatut() == null || villes.getStatut() == "")
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Statut est obligatoire !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le statut est obligatoire !" , "warning"));
 			}
 	        villesServices.updateVille(id, villes);
 	        return new ResponseEntity<>(new MessageResponse("Ville modifée.","success"),HttpStatus.OK);
 	    }
 
-	 
+
 		 @GetMapping("/delete/{id}")
 		 public ResponseEntity<?> deleteVillesStatus(@PathVariable Long id)
 		 {
 			 villesServices.deleteVillesStatus(id);
 			 return new ResponseEntity<>(new MessageResponse("Ville supprimée.","success") , HttpStatus.OK);
 		 }
-	 
+
 	 	@GetMapping("/allPagable")
 		private ResponseEntity<PageableResponseDTO> getAllVillesPageable(
 				@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
@@ -110,7 +104,7 @@ public class VillesController {
 			List<ListApis> listApis = activites.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());
 			return listApis;
 		}
-	 
+
 		private ListApis mapToApisList(Villes activites)
 		{
 			ListApis listApis = new ListApis();

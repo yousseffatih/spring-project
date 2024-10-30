@@ -12,26 +12,29 @@ import org.springframework.data.repository.query.Param;
 import com.exemple.security.entity.Affectations;
 
 public interface AffectationsRepository extends JpaRepository<Affectations, Long>{
-	
+
+	@Override
 	Optional<Affectations> findById(Long id);
-	
+
 	@Query("select a"
 			+ " from Affectations a "
 			+ " where a.statut in ('0','1')")
 	List<Affectations> findAllWithStatus();
-	
-	
+
+
 	@Query("select a"
 			+ " from Affectations a "
 			+ " where (a.statut = '1' OR a.statut = '0')"
-			+ "and a.id = :val")
+			+ " and a.id = :val "
+			+ " order by a.libelle")
 	Optional<Affectations> findByIdStatut(@Param("val") Long val);
-	
+
 	@Query("select a"
 			+ " from Affectations a "
-			+ " where a.statut in ('0','1')")
+			+ " where a.statut in ('0','1') "
+			+ " order by a.libelle")
     Page<Affectations> findallStatutsPa(Pageable pageable);
-	
+
 	@Query("select "
 			+ " case when count(a)> 0 then true "
 			+ " else false end "
@@ -39,14 +42,14 @@ public interface AffectationsRepository extends JpaRepository<Affectations, Long
 			+ " where lower(a.code) = lower(:val)  and a.statut in('0','1')")
 	boolean existsByCodeAdd(@Param("val") String val);
 
-	
+
 	@Query("select "
 			+ " case when count(a)> 0 then true "
 			+ " else false end "
 			+ " from Affectations a "
 			+ " where lower(a.libelle) = lower(:val)  and a.statut in('0','1')")
 	boolean existsByLibelleAdd(@Param("val") String val);
-	
+
 	@Query("select "
 			+ " case when count(a)> 0 then true "
 			+ " else false end "
@@ -54,7 +57,7 @@ public interface AffectationsRepository extends JpaRepository<Affectations, Long
 			+ " where lower(code) like lower(:val) and a.statut not in('-1','-2')"
 			+ " and a.id <> :id ")
 	boolean existsByCodeModif(@Param("val") String val, @Param("id") Long id);
-	
+
 	@Query("select "
 			+ " case when count(a)> 0 then true "
 			+ " else false end "

@@ -2,7 +2,6 @@ package com.exemple.security.playload.dto;
 
 import java.util.List;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,10 +10,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PageableResponseDTO {
+
 	private List<?> content;
+
 	private int pageNo;
+
 	private int pageSize;
+
 	private long totalElement;
+
 	private int totlaPages;
+
 	private Boolean last;
 }

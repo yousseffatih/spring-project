@@ -11,11 +11,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class File {
+public class Documents {
 	@NotNull(message = "extention est obligatoire !")
 	@NotEmpty(message = " extention est obligatoire !")
 	private String extention ;
-	
+
 	@NotNull(message = "File data est obligatoire !")
 	@NotEmpty(message = "File est obligatoire !")
 	private String base64File;

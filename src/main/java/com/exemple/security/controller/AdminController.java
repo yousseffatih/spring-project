@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class AdminController {
-	
+
 	@GetMapping()
 	public ResponseEntity<String> sayHello()
 	{

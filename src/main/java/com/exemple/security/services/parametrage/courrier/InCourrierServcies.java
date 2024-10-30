@@ -21,5 +21,5 @@ public interface InCourrierServcies {
 	public CourrierDTO updateCourrir(CourrierDTO courrierDTO, Long id);
 
 	CourrierDTO getCourrierId(Long id);
-	
+
 }

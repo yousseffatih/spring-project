@@ -6,18 +6,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.exemple.security.entity.Role;
-import com.exemple.security.entity.User;
 import com.exemple.security.entity.UserRole;
 
 public interface UserRoleRepository extends JpaRepository<UserRole, Long>{
-	
+
 	@Query("SELECT d "
 	 		+ " FROM UserRole d "
 	 		+ " WHERE user.id = :idUser "
 	 		+ " and d.statut = '1' ")
 	 List<UserRole> getDroits(@Param("idUser") Long idUser);
-	
+
 	@Query("SELECT d "
 	 		+ " FROM UserRole d "
 	 		+ " WHERE user.id = :idUser "

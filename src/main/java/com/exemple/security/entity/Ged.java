@@ -22,23 +22,25 @@ import lombok.ToString;
 @ToString
 @Entity
 public class Ged extends ClassEntity{
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	private Date dateUpload;
-	
+
 	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
 	private User user;
-	
+
 	private String fileName;
-	
+
 	private String contextFile;
-	
+
+	private String type;
+
 	public Ged(Long id, String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation,Date dateUploa , User user , String fileName , String contextFile ) {
-        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation); 
+        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
         this.id = id;
         this.dateUpload = dateUploa;
         this.fileName = fileName;

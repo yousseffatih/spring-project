@@ -11,38 +11,45 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.exemple.security.constants.GlobalConstants;
+import com.exemple.security.entity.Numero;
 import com.exemple.security.entity.OrgExpDest;
-import com.exemple.security.entity.Organisme;
 import com.exemple.security.playload.ResourceNotFoundException;
 import com.exemple.security.playload.dto.OrgExpDestDTO;
-import com.exemple.security.playload.dto.OrganismeDTO;
 import com.exemple.security.playload.dto.PageableResponseDTO;
+import com.exemple.security.repository.NumeroRepository;
 import com.exemple.security.repository.OrgExpDestRepository;
+import com.exemple.security.services.parametrage.Numero.InNumeroService;
 
 @Service
 public class OrgExpDestService implements InOrgExpDestService{
-	
+
 	@Autowired
 	private OrgExpDestRepository orgExpDestRepository;
-	
 
-	
+	@Autowired
+	private InNumeroService numeroService;
+
+	@Autowired
+	private NumeroRepository numeroRepository;
+
+
+
 	@Override
 	public List<OrgExpDest> getAllOrgExpDest() {
 		List<OrgExpDest> orgExpDests = orgExpDestRepository.findAllWithStatus();
 		return orgExpDests;
 	}
-	
+
 	@Override
 	public OrgExpDest getOrgExpDest(Long id)
 	{
 		OrgExpDest orgExpDest = orgExpDestRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("OrgExpDest", "id", id));
 		return orgExpDest;
 	}
-	
+
 	@Override
 	public PageableResponseDTO getAllOrgExpDestPagebal(int pageNo , int pageSize) {
-		Pageable pageable = PageRequest.of(pageNo, pageSize); 
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<OrgExpDest> v = orgExpDestRepository.findallStatutsPa(pageable);
 		List<OrgExpDestDTO> orgExpDests = v.getContent().stream().map(e -> mapToDTO(e)).collect(Collectors.toList());
 		PageableResponseDTO  pageableResponseDTO = new PageableResponseDTO();
@@ -54,11 +61,21 @@ public class OrgExpDestService implements InOrgExpDestService{
 		pageableResponseDTO.setLast(v.isLast());
 		return pageableResponseDTO;
 	}
-	
+
 	@Override
 	public OrgExpDest addOrgExpDest(OrgExpDestDTO orgExpDestDTO ) {
 		OrgExpDest orgrgExpDest=new OrgExpDest();
-		orgrgExpDest.setCode(orgExpDestDTO.getCode());
+
+		List<Numero> numeros = numeroRepository.findByCode("OrgExpDest");
+		if(numeros != null && !numeros.isEmpty())
+		{
+			Numero numero = numeros.get(0);
+			numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
+
+			numeroRepository.save(numero);
+			orgrgExpDest.setCode(numeroService.genrateNumero(numero));
+		}
+
 		orgrgExpDest.setLibelle(orgExpDestDTO.getLibelle());
 		orgrgExpDest.setAdresse(orgExpDestDTO.getAdresse());
 		orgrgExpDest.setEmail(orgExpDestDTO.getEmail());
@@ -68,7 +85,7 @@ public class OrgExpDestService implements InOrgExpDestService{
 		orgrgExpDest.setDateCreation(new Date());
 		return orgExpDestRepository.save(orgrgExpDest);
 	}
-	
+
 	@Override
 	public OrgExpDest deleteOrgExpDestStatut(Long id) {
 		OrgExpDest orgExpDest = orgExpDestRepository.findById(id)
@@ -77,11 +94,10 @@ public class OrgExpDestService implements InOrgExpDestService{
 		 orgExpDest.setDateDesactivation(new Date());
 	     return  orgExpDestRepository.save(orgExpDest);
 	}
-	
+
 	@Override
 	public OrgExpDest updateorgExpDest(Long id, OrgExpDestDTO orgExpDestDTO) {
 		OrgExpDest orgExpDest = orgExpDestRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("OrgExpDest", "id", id));
-		orgExpDest.setCode(orgExpDestDTO.getCode());
 		orgExpDest.setLibelle(orgExpDestDTO.getLibelle());
 		orgExpDest.setAdresse(orgExpDestDTO.getAdresse());
 		orgExpDest.setEmail(orgExpDestDTO.getEmail());
@@ -92,7 +108,7 @@ public class OrgExpDestService implements InOrgExpDestService{
 		orgExpDest.setDateModification(new Date());
 		return orgExpDestRepository.save(orgExpDest);
 	}
-	
+
 	private OrgExpDestDTO mapToDTO(OrgExpDest x)
 	{
 		OrgExpDestDTO dto = new OrgExpDestDTO();

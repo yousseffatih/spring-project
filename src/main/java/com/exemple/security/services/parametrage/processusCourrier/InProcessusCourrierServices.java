@@ -8,8 +8,10 @@ public interface InProcessusCourrierServices {
 
 	public ProcessusCourrierDTO getProcessusCourrier(Long id);
 
-	PageableResponseDTO getAllProcessusCourrier(int pageNo, int pageSize, Long idCourrier);
+	public PageableResponseDTO getAllProcessusCourrier(int pageNo, int pageSize, Long idCourrier);
 
-	void validateProcessusCourrier(ValidePCdto validePCdto);
-	
+	public void validateProcessusCourrier(ValidePCdto validePCdto);
+
+	public void annulerValidation(Long id);
+
 }

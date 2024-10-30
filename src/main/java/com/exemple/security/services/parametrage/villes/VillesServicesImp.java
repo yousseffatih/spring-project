@@ -1,4 +1,4 @@
-package com.exemple.security.services.parametrage.villes;
+ package com.exemple.security.services.parametrage.villes;
 
 import java.util.Date;
 import java.util.List;
@@ -11,19 +11,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.exemple.security.constants.GlobalConstants;
+import com.exemple.security.entity.Numero;
 import com.exemple.security.entity.Villes;
 import com.exemple.security.playload.ResourceNotFoundException;
 import com.exemple.security.playload.dto.PageableResponseDTO;
 import com.exemple.security.playload.dto.VillesDTO;
+import com.exemple.security.repository.NumeroRepository;
 import com.exemple.security.repository.VillesRepository;
+import com.exemple.security.services.parametrage.Numero.InNumeroService;
 
 
 @Service
 public class VillesServicesImp implements InVillesServices{
-	
+
 	@Autowired
 	private VillesRepository villesRepository;
-	
+
+	@Autowired
+	private InNumeroService numeroService;
+
+	@Autowired
+	private NumeroRepository numeroRepository;
+
 	public VillesServicesImp (VillesRepository villesRepository)
 	{
 		this.villesRepository = villesRepository;
@@ -32,7 +41,17 @@ public class VillesServicesImp implements InVillesServices{
 	@Override
 	public Villes addVilles(VillesDTO villes) {
 		Villes addville=new Villes();
-		addville.setCode(villes.getCode());
+
+		List<Numero> numeros = numeroRepository.findByCode("Villes");
+		if(numeros != null && !numeros.isEmpty())
+		{
+			Numero numero = numeros.get(0);
+			numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
+
+			numeroRepository.save(numero);
+			addville.setCode(numeroService.genrateNumero(numero));
+		}
+
 		addville.setLibelle(villes.getLibelle());
 		addville.setStatut(GlobalConstants.STATUT_ACTIF);
 		addville.setDateCreation(new Date());
@@ -54,7 +73,6 @@ public class VillesServicesImp implements InVillesServices{
 	@Override
 	public Villes updateVille(Long idVilles, VillesDTO villes) {
 		Villes ville = villesRepository.findByIdStatut(idVilles).orElseThrow(() ->  new ResourceNotFoundException("ville", "id", idVilles));
-		ville.setCode(villes.getCode());
 		ville.setLibelle(villes.getLibelle());
 		ville.setDateModification(new Date());
 		ville.setStatut(villes.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
@@ -67,9 +85,9 @@ public class VillesServicesImp implements InVillesServices{
 		 Villes ville = villesRepository.findById(id)
 	                .orElseThrow(() -> new  ResourceNotFoundException("ville", "id", id));
 	        villesRepository.delete(ville);
-		
+
 	}
-	
+
 	@Override
 	public Villes deleteVillesStatus(Long id) {
 		 Villes ville = villesRepository.findById(id)
@@ -78,10 +96,10 @@ public class VillesServicesImp implements InVillesServices{
 		 ville.setDateDesactivation(new Date());
 	     return  villesRepository.save(ville);
 	}
-	
+
 	@Override
 	public PageableResponseDTO getAllVillesPagebal(int pageNo , int pageSize) {
-		Pageable pageable = PageRequest.of(pageNo, pageSize); 
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<Villes> v = villesRepository.findallStatutsPa(pageable);
 		List<VillesDTO> villes = v.getContent().stream().map(e -> mapToDTO(e)).collect(Collectors.toList());
 		PageableResponseDTO  pageableResponseDTO = new PageableResponseDTO();
@@ -92,9 +110,9 @@ public class VillesServicesImp implements InVillesServices{
 		pageableResponseDTO.setTotlaPages(v.getTotalPages());
 		pageableResponseDTO.setLast(v.isLast());
 		return pageableResponseDTO;
-		
+
 	}
-	
+
 	private VillesDTO mapToDTO(Villes x)
 	{
 		VillesDTO dto = new VillesDTO();
@@ -107,6 +125,6 @@ public class VillesServicesImp implements InVillesServices{
 		dto.setStatut(x.getStatut().equals("1")? "actif" : "inactif");
 		return dto;
 	}
-	
+
 
 }

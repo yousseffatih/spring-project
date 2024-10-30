@@ -14,17 +14,19 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class GedDTO {
-	
+
 	private Long id;
-	
+
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dateUpload;
-	
+
 	private Long idUser;
-	
+
 	private String libelleUser;
-	
+
 	private String fileName;
-	
+
 	private String fileContext;
+
+	private String type;
 }

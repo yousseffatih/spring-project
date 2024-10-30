@@ -18,57 +18,56 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AffectationsDTO {
-	
+
 	private Long id;
-	
+
 	@NotNull(message = "Libelle est obligatoire !")
 	@NotEmpty(message = "Libelle est obligatoire !")
 	private String libelle;
-	
-	@NotNull(message = "Code est obligatoire !")
-	@NotEmpty(message = "Code est obligatoire !")
+
+
 	private String code;
-	
+
 	private String statut;
-	
+
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dateCreation;
-	
+
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dateModification;
-	
+
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dateDesactivation;
-	
+
 	@NotNull(message = "Orgnisme est obligatoire !")
 	private Long idorganismes;
-	
+
 	private String libelleOrganisme;
-	
+
 	@NotNull(message = "Villes est obligatoire !")
     private Long idvilles;
-	
+
 	private String libelleVille;
-    
+
 	@NotNull(message = "Reseux est obligatoire !")
     private Long idreseaux;
-	
+
 	private String libelleReseaux;
-    
+
 	@NotNull(message = "Activite est obligatoire !")
     private Long idactivites;
-	
+
 	private String libelleActivites;
 
 	private String adresse;
-	
+
 	private String email;
-	
+
 	private String telephone;
-	
+
 	private String fax;
-	
+
 	private String typeAffectation;
-	
+
 	private String bloque;
 }

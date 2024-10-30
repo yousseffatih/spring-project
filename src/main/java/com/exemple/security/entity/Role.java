@@ -4,7 +4,6 @@ import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,14 +27,14 @@ public class Role extends ClassEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@Size(max = 100)
 	@Column(name = "NAME", length = 100)
 	private String name;
-	
-	
+
+
 	public Role(Long id, String name,String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
-        super(libelle,code, statut, dateCreation, dateModification, dateDesactivation); 
+        super(libelle,code, statut, dateCreation, dateModification, dateDesactivation);
         this.id = id;
         this.name = name;
     }

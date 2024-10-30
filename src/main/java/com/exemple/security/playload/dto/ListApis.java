@@ -10,7 +10,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListApis {
+
 	private Long id;
+
 	private String libelle;
+
 	private String code;
 }

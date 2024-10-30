@@ -21,10 +21,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter{
-	
+
 	@Autowired
 	private JWTService jwtService;
-	
+
 	@Autowired
 	ApplicationContext context;
 
@@ -35,27 +35,27 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
 		String authHeader = request.getHeader("Authorization");
 		String token = null;
 		String username = null;
-		
+
 		if(authHeader != null && authHeader.startsWith("Bearer ")) {
 			token = authHeader.substring(7);
 			username = jwtService.extractUserName(token);
-			
+
 		}
-		
+
 		if(username != null && SecurityContextHolder.getContext().getAuthentication() == null)
 		{
 			UserDetails userDetails = context.getBean(UserService.class).loadUserByUsername(username);
 			if(jwtService.validateToken(token,userDetails))
 			{
 				UsernamePasswordAuthenticationToken autToken = new UsernamePasswordAuthenticationToken(username,null, userDetails.getAuthorities());
-				autToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));	
+				autToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(autToken);
 			}
 		}
 		filterChain.doFilter(request, response);
-		
+
 	}
-	
-	
-	
+
+
+
 }

@@ -13,8 +13,6 @@ import javax.crypto.SecretKey;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -22,9 +20,9 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JWTService{
-	
+
 	 private String secretkey = "";
-	
+
 	public JWTService() {
 
         try {
@@ -35,7 +33,7 @@ public class JWTService{
             throw new RuntimeException(e);
         }
     }
-	
+
 	public String generateRefreshToken(Map<String, Object> extractClaims,String username) {
 		// TODO Auto-generated method stub
 		return Jwts.builder()
@@ -48,7 +46,7 @@ public class JWTService{
                 .signWith(getSignKey())
                 .compact();
 	}
-	
+
 	public String generateToken(String username)
 	{
 		Map<String, Object> claims = new HashMap<>();
@@ -67,12 +65,12 @@ public class JWTService{
 		byte[] keyBytes = Decoders.BASE64.decode(secretkey);
         return Keys.hmacShaKeyFor(keyBytes);
 	}
-	
-	
+
+
 	public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
-	
+
 	private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
@@ -85,7 +83,7 @@ public class JWTService{
                 .parseSignedClaims(token)
                 .getPayload();
     }
-	
+
     public boolean validateToken(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
         return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
@@ -99,6 +97,6 @@ public class JWTService{
         return extractClaim(token, Claims::getExpiration);
     }
 
-	
+
 }
 

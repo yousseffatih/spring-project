@@ -10,18 +10,22 @@ import org.springframework.data.repository.query.Param;
 import com.exemple.security.entity.Ged;
 
 
+
+
+
+
 public interface GedRepository extends JpaRepository<Ged, Long>{
-	
+
 	@Query(value="SELECT * "
 			+ "FROM ged g "
 			+ "WHERE g.statut in ('0','1')"
-			+ "AND g.file_name LIKE :val% ",nativeQuery = true)
+			+ "AND g.context_file LIKE :val% ",nativeQuery = true)
 	List<Ged> findAllByStartFileName(@Param("val") String val);
-	
+
 	@Query(value="SELECT * "
 			+ "FROM ged g "
 			+ "WHERE g.statut in ('0','1')"
 			+ "AND g.id  = :val",nativeQuery = true)
 	Optional<Ged> findByIdStatut(@Param("val") Long val);
-	
+
 }

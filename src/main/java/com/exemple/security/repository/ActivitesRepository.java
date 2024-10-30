@@ -16,41 +16,44 @@ import com.exemple.security.entity.Activites;
 
 @Repository
 public interface ActivitesRepository extends JpaRepository<Activites, Long>{
-	
+
+	@Override
 	Optional<Activites> findById(Long id);
-	
+
 	@Query("select a"
 			+ " from Activites a "
 			+ " where a.statut in ('0','1')")
 	List<Activites> findAllWithStatus();
-	
-	
+
+
 	@Query("select a"
 			+ " from Activites a "
 			+ " where a.statut in ('0','1')"
-			+ "and a.id = :val")
+			+ " and a.id = :val "
+			+ " order by a.libelle ")
 	Optional<Activites> findByIdStatut(@Param("val") Long val);
-	
+
 	@Query("select a"
 			+ " from Activites a "
-			+ " where a.statut in ('0','1')")
+			+ " where a.statut in ('0','1') "
+			+ " order by a.libelle ")
     Page<Activites> findallStatutsPa(Pageable pageable);
-	
+
 	@Query("select "
 			+ " case when count(a)> 0 then true "
 			+ " else false end "
 			+ " from Activites a "
-			+ " where lower(a.code) = lower(:val)  and a.statut in('0','1')")
+			+ " where lower(a.code) = lower(:val)  and a.statut in('0','1') ")
 	boolean existsByCodeAdd(@Param("val") String val);
 
-	
+
 	@Query("select "
 			+ " case when count(a)> 0 then true "
 			+ " else false end "
 			+ " from Activites a "
-			+ " where lower(a.libelle) = lower(:val)  and a.statut in('0','1')")
+			+ " where lower(a.libelle) = lower(:val)  and a.statut in('0','1') ")
 	boolean existsByLibelleAdd(@Param("val") String val);
-	
+
 	@Query("select "
 			+ " case when count(a)> 0 then true "
 			+ " else false end "
@@ -59,7 +62,7 @@ public interface ActivitesRepository extends JpaRepository<Activites, Long>{
 			+ " and a.statut not in('-1','-2') "
 			+ " and a.id <> :id ")
 	boolean existsByCodeModif(@Param("val") String val, @Param("id") Long id);
-	
+
 	@Query("select "
 			+ " case when count(a)> 0 then true "
 			+ " else false end "

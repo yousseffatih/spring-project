@@ -19,7 +19,7 @@ import lombok.ToString;
 @Setter
 @Table(name = "myentity")
 public class MyEntity extends ClassEntity{
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idLong;

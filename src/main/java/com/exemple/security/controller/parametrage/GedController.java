@@ -1,7 +1,7 @@
 package com.exemple.security.controller.parametrage;
 
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,32 +25,32 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/ged")
 @RequiredArgsConstructor
 public class GedController {
-	
+
 	@Autowired
 	private InGedServices gedServices;
-	
+
 	@PostMapping()
 	public ResponseEntity<?> saveGed(@Valid @RequestBody SaveGedBodyDTO saveGedBodyDTO) throws IOException
 	{
 		try {
-			List<GedDTO> geds = gedServices.saveImages(saveGedBodyDTO);
-			return new ResponseEntity<>(new MessageResponse("Ged ajoutée." , "success"),HttpStatus.OK);
+			gedServices.saveImages(saveGedBodyDTO);
+			return new ResponseEntity<>(new MessageResponse("Document ajouté." , "success"),HttpStatus.OK);
 		} catch (IOException e) {
-			return new ResponseEntity<>(new MessageResponse("Problem in saving Data" , "warning"),HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new MessageResponse("Problème d'enregistrement des documents." , "warning"),HttpStatus.BAD_REQUEST);
 		}
-	
+
 	}
-	
-	@GetMapping("/{nameId}")
-	public ResponseEntity<?> getAllByNameId(@PathVariable String nameId)
+
+	@GetMapping("/{conetxt}")
+	public ResponseEntity<?> getAllByNameId(@PathVariable String conetxt) throws IOException
 	{
-		List<GedDTO> list = gedServices.getAllGed(nameId);
+		List<GedDTO> list = gedServices.getAllGed(conetxt);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/delete/{id}")
 	public ResponseEntity<?> deletedGed(@PathVariable Long id) {
 		gedServices.deleteGed(id);
-		return new ResponseEntity<>(new MessageResponse("Ged supprimée.","success") , HttpStatus.OK);
+		return new ResponseEntity<>(new MessageResponse("Document supprimé.","success") , HttpStatus.OK);
 	}
 }

@@ -31,28 +31,28 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/orgExpDest")
 @RequiredArgsConstructor
 public class OrgExpDestController {
-	
+
 
 	@Autowired
 	private InOrgExpDestService orgExpDestService;
-	
+
 	@Autowired
 	private OrgExpDestRepository orgExpDestRepository;
-	
-	
+
+
 	@GetMapping("/{id}")
 	private ResponseEntity<OrgExpDest> getVille(@PathVariable Long id)
 	{
 		OrgExpDest orgExpDest = orgExpDestService.getOrgExpDest(id);
-		return new ResponseEntity<OrgExpDest>(orgExpDest, HttpStatus.OK);
+		return new ResponseEntity<>(orgExpDest, HttpStatus.OK);
 	}
-	
-	
+
+
 	@GetMapping("/all")
 	public List<OrgExpDest> getAllActivites() {
 		return orgExpDestService.getAllOrgExpDest();
 	}
-	
+
 	 @GetMapping("/allPagable")
 	public ResponseEntity<PageableResponseDTO> getAllActivitesPageable(
 			@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
@@ -61,46 +61,40 @@ public class OrgExpDestController {
 		PageableResponseDTO organismeList = orgExpDestService.getAllOrgExpDestPagebal(pageNo,pageSize);
 		return new ResponseEntity<>(organismeList , HttpStatus.OK);
 	}
-	 
+
 	 @GetMapping("/delete/{id}")
 	 public ResponseEntity<?> deleteVillesStatus(@PathVariable Long id)
 	 {
 		  orgExpDestService.deleteOrgExpDestStatut(id);
-		 return new ResponseEntity<>(new MessageResponse("OrgExpDest supprimée.","success") , HttpStatus.OK);
+		 return new ResponseEntity<>(new MessageResponse("OrgExpDest supprimé.","success") , HttpStatus.OK);
 	 }
-	 
+
 	 @PostMapping
 	 public ResponseEntity<?> addActivite(@Valid @RequestBody OrgExpDestDTO orgExpDestDTO)
 	 {
-		 if(orgExpDestRepository.existsByCodeAdd(orgExpDestDTO.getCode()))
-		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-		}
+
 		if(orgExpDestRepository.existsByLibelleAdd(orgExpDestDTO.getLibelle()))
 		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 		}
-		
+
 		orgExpDestService.addOrgExpDest(orgExpDestDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("OrgExpDest ajoutée.","success"));
+		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("OrgExpDest ajouté.","success"));
 	 }
-	 
+
 	 @PutMapping("/{id}")
 	    public ResponseEntity<?> updateActivites(@PathVariable Long id,	@Valid @RequestBody OrgExpDestDTO orgExpDestDTO) {
-			if(orgExpDestRepository.existsByCodeModif(orgExpDestDTO.getCode(),id))
-			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-			}
+
 			if(orgExpDestRepository.existsByLibelleModif(orgExpDestDTO.getLibelle(), id))
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 			}
 			if(orgExpDestDTO.getStatut() == null || orgExpDestDTO.getStatut() == "")
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Statut est obligatoire !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le statut est obligatoire !" , "warning"));
 			}
 	        orgExpDestService.updateorgExpDest(id, orgExpDestDTO) ;
-	        return new ResponseEntity<>(new MessageResponse("OrgExpDest modifiée.","success"),HttpStatus.OK);
+	        return new ResponseEntity<>(new MessageResponse("OrgExpDest modifié.","success"),HttpStatus.OK);
 	    }
 	 @GetMapping("/listOrgExpDest")
 		public List<ListApis> getAllActivitesApis() {
@@ -108,7 +102,7 @@ public class OrgExpDestController {
 			List<ListApis> listApis = activites.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());
 			return listApis;
 		}
-	 
+
 		private ListApis mapToApisList(OrgExpDest activites)
 		{
 			ListApis listApis = new ListApis();

@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class ResourceNotFoundExceptionUsername extends RuntimeException{
-	
+
 	private String resourceName;
 	private String fieldName;
 	private String fieldValue;
-	
+
 	public ResourceNotFoundExceptionUsername(String resourceName , String fieldName , String fieldValue) {
 		super(String.format("%s not found with %s : '%s'", resourceName,fieldName,fieldValue));
 		this.resourceName=resourceName;
@@ -40,5 +40,5 @@ public class ResourceNotFoundExceptionUsername extends RuntimeException{
 	public void setFieldValue(String fieldValue) {
 		this.fieldValue = fieldValue;
 	}
- 
+
 }

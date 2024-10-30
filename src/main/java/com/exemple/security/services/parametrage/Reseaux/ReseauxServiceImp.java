@@ -11,20 +11,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.exemple.security.constants.GlobalConstants;
-import com.exemple.security.entity.Activites;
+import com.exemple.security.entity.Numero;
 import com.exemple.security.entity.Reseaux;
 import com.exemple.security.playload.ResourceNotFoundException;
-import com.exemple.security.playload.dto.ActivitesDTO;
 import com.exemple.security.playload.dto.PageableResponseDTO;
 import com.exemple.security.playload.dto.ReseauxDTO;
+import com.exemple.security.repository.NumeroRepository;
 import com.exemple.security.repository.ReseauxRepository;
+import com.exemple.security.services.parametrage.Numero.InNumeroService;
 
 @Service
 public class ReseauxServiceImp implements InReseauxService{
-	
+
 	@Autowired
 	private ReseauxRepository reseauxRepository;
-	
+
+	@Autowired
+	private InNumeroService numeroService;
+
+	@Autowired
+	private NumeroRepository numeroRepository;
+
 	public ReseauxServiceImp (ReseauxRepository reseauxRepository)
 	{
 		this.reseauxRepository = reseauxRepository;
@@ -33,7 +40,17 @@ public class ReseauxServiceImp implements InReseauxService{
 	@Override
 	public Reseaux addReseaux(ReseauxDTO reseauxDTO) {
 		Reseaux addreseaux=new Reseaux();
-		addreseaux.setCode(reseauxDTO.getCode());
+
+		List<Numero> numeros = numeroRepository.findByCode("Reseaux");
+		if(numeros != null && !numeros.isEmpty())
+		{
+			Numero numero = numeros.get(0);
+			numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
+
+			numeroRepository.save(numero);
+			addreseaux.setCode(numeroService.genrateNumero(numero));
+		}
+
 		addreseaux.setLibelle(reseauxDTO.getLibelle());
 		addreseaux.setStatut(GlobalConstants.STATUT_ACTIF);
 		addreseaux.setDateCreation(new Date());
@@ -55,7 +72,6 @@ public class ReseauxServiceImp implements InReseauxService{
 	@Override
 	public Reseaux updateReseaux(Long id, ReseauxDTO reseauxDTO) {
 		Reseaux reseaux = reseauxRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("Reseaux", "id", Long.valueOf(id)));
-		reseaux.setCode(reseauxDTO.getCode());
 		reseaux.setLibelle(reseauxDTO.getLibelle());
 		reseaux.setDateModification(new Date());
 		reseaux.setStatut(reseauxDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
@@ -68,9 +84,9 @@ public class ReseauxServiceImp implements InReseauxService{
 		Reseaux ville = reseauxRepository.findById(id)
 	                .orElseThrow(() -> new  ResourceNotFoundException("Reseaux", "id", Long.valueOf(id)));
 	        reseauxRepository.delete(ville);
-		
+
 	}
-	
+
 	@Override
 	public Reseaux deleteReseauxStatut(Long id) {
 		Reseaux reseaux = reseauxRepository.findById(id)
@@ -79,10 +95,10 @@ public class ReseauxServiceImp implements InReseauxService{
 		reseaux.setDateDesactivation(new Date());
 	     return  reseauxRepository.save(reseaux);
 	}
-	
+
 	@Override
 	public PageableResponseDTO getAllReseauxPagebal(int pageNo , int pageSize) {
-		Pageable pageable = PageRequest.of(pageNo, pageSize); 
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<Reseaux> v = reseauxRepository.findallStatutsPa(pageable);
 		List<ReseauxDTO> villes = v.getContent().stream().map(e -> mapToDTO(e)).collect(Collectors.toList());
 		PageableResponseDTO  pageableResponseDTO = new PageableResponseDTO();
@@ -93,9 +109,9 @@ public class ReseauxServiceImp implements InReseauxService{
 		pageableResponseDTO.setTotlaPages(v.getTotalPages());
 		pageableResponseDTO.setLast(v.isLast());
 		return pageableResponseDTO;
-		
+
 	}
-	
+
 	private ReseauxDTO mapToDTO(Reseaux x)
 	{
 		ReseauxDTO dto = new ReseauxDTO();

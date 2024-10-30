@@ -11,31 +11,42 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.exemple.security.constants.GlobalConstants;
-import com.exemple.security.entity.Activites;
 import com.exemple.security.entity.Fonctions;
-import com.exemple.security.entity.Villes;
+import com.exemple.security.entity.Numero;
 import com.exemple.security.playload.ResourceNotFoundException;
-import com.exemple.security.playload.dto.ActivitesDTO;
 import com.exemple.security.playload.dto.FonctionsDTO;
 import com.exemple.security.playload.dto.PageableResponseDTO;
-import com.exemple.security.playload.dto.VillesDTO;
 import com.exemple.security.repository.FonctionsRepository;
-import com.exemple.security.repository.VillesRepository;
+import com.exemple.security.repository.NumeroRepository;
+import com.exemple.security.services.parametrage.Numero.InNumeroService;
 
 @Service
 public class FonctionsServicesImp implements InFonctionsServices{
 	@Autowired
 	private FonctionsRepository fonctionsRepository;
-	
-	public FonctionsServicesImp (FonctionsRepository fonctionsRepository)
-	{
-		this.fonctionsRepository = fonctionsRepository;
-	}
+
+	@Autowired
+	private InNumeroService numeroService;
+
+	@Autowired
+	private NumeroRepository numeroRepository;
 
 	@Override
 	public Fonctions addFonctions(FonctionsDTO fonctionsDTO) {
 		Fonctions addFonctions=new Fonctions();
-		addFonctions.setCode(fonctionsDTO.getCode());
+
+
+
+		List<Numero> numeros = numeroRepository.findByCode("Fonctions");
+		if(numeros != null && !numeros.isEmpty())
+		{
+			Numero numero = numeros.get(0);
+			numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
+
+			numeroRepository.save(numero);
+			addFonctions.setCode(numeroService.genrateNumero(numero));
+		}
+
 		addFonctions.setLibelle(fonctionsDTO.getLibelle());
 		addFonctions.setStatut(GlobalConstants.STATUT_ACTIF);
 		addFonctions.setDateCreation(new Date());
@@ -57,7 +68,6 @@ public class FonctionsServicesImp implements InFonctionsServices{
 	@Override
 	public Fonctions updateFonctions(Long idFonctions, FonctionsDTO fonctionsDTO) {
 		Fonctions fonctions = fonctionsRepository.findById(idFonctions).orElseThrow(() ->  new ResourceNotFoundException("Fonctions", "id", idFonctions));
-		fonctions.setCode(fonctionsDTO.getCode());
 		fonctions.setLibelle(fonctionsDTO.getLibelle());
 		fonctions.setDateModification(new Date());
 		fonctions.setStatut(fonctionsDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
@@ -69,9 +79,9 @@ public class FonctionsServicesImp implements InFonctionsServices{
 		Fonctions fonctions = fonctionsRepository.findById(id)
 	                .orElseThrow(() -> new  ResourceNotFoundException("Fonctions", "id", id));
 	        fonctionsRepository.delete(fonctions);
-		
+
 	}
-	
+
 	@Override
 	public Fonctions deleteFonctionsStatus(Long id) {
 		Fonctions fonctions = fonctionsRepository.findById(id)
@@ -80,10 +90,10 @@ public class FonctionsServicesImp implements InFonctionsServices{
 		 fonctions.setDateDesactivation(new Date());
 	     return  fonctionsRepository.save(fonctions);
 	}
-	
+
 	@Override
 	public PageableResponseDTO getAllFonctionsPagebal(int pageNo , int pageSize) {
-		Pageable pageable = PageRequest.of(pageNo, pageSize); 
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<Fonctions> v = fonctionsRepository.findallStatutsPa(pageable);
 		List<FonctionsDTO> fonctions = v.getContent().stream().map(e -> mapToDTO(e)).collect(Collectors.toList());
 		PageableResponseDTO  pageableResponseDTO = new PageableResponseDTO();
@@ -94,9 +104,9 @@ public class FonctionsServicesImp implements InFonctionsServices{
 		pageableResponseDTO.setTotlaPages(v.getTotalPages());
 		pageableResponseDTO.setLast(v.isLast());
 		return pageableResponseDTO;
-		
+
 	}
-	
+
 	private FonctionsDTO mapToDTO(Fonctions x)
 	{
 		FonctionsDTO dto = new FonctionsDTO();

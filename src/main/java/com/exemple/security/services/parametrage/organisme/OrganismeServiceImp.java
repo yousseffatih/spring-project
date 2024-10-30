@@ -11,39 +11,44 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.exemple.security.constants.GlobalConstants;
-import com.exemple.security.entity.Fonctions;
+import com.exemple.security.entity.Numero;
 import com.exemple.security.entity.Organisme;
 import com.exemple.security.playload.ResourceNotFoundException;
-import com.exemple.security.playload.dto.FonctionsDTO;
 import com.exemple.security.playload.dto.OrganismeDTO;
 import com.exemple.security.playload.dto.PageableResponseDTO;
+import com.exemple.security.repository.NumeroRepository;
 import com.exemple.security.repository.OrganismeRepository;
+import com.exemple.security.services.parametrage.Numero.InNumeroService;
 
 @Service
 public class OrganismeServiceImp implements InOrganismeService{
-	
+
 	@Autowired
 	private OrganismeRepository organismeRepository;
-	
-	
 
-	
+	@Autowired
+	private InNumeroService numeroService;
+
+	@Autowired
+	private NumeroRepository numeroRepository;
+
+
 	@Override
 	public List<Organisme> getAllOrganisme() {
 		List<Organisme> organismes = organismeRepository.findAllWithStatus();
 		return organismes;
 	}
-	
+
 	@Override
 	public Organisme getOrganisme(Long id)
 	{
 		Organisme organisme = organismeRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("Organisme", "id", id));
 		return organisme;
 	}
-	
+
 	@Override
 	public PageableResponseDTO getAllOrganismePagebal(int pageNo , int pageSize) {
-		Pageable pageable = PageRequest.of(pageNo, pageSize); 
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<Organisme> v = organismeRepository.findallStatutsPa(pageable);
 		List<OrganismeDTO> organismes = v.getContent().stream().map(e -> mapToDTO(e)).collect(Collectors.toList());
 		PageableResponseDTO  pageableResponseDTO = new PageableResponseDTO();
@@ -55,11 +60,21 @@ public class OrganismeServiceImp implements InOrganismeService{
 		pageableResponseDTO.setLast(v.isLast());
 		return pageableResponseDTO;
 	}
-	
+
 	@Override
 	public Organisme addOrganisme(OrganismeDTO organismeDTO) {
 		Organisme addOrganisme=new Organisme();
-		addOrganisme.setCode(organismeDTO.getCode());
+
+		List<Numero> numeros = numeroRepository.findByCode("Organisme");
+		if(numeros != null && !numeros.isEmpty())
+		{
+			Numero numero = numeros.get(0);
+			numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
+
+			numeroRepository.save(numero);
+			addOrganisme.setCode(numeroService.genrateNumero(numero));
+		}
+
 		addOrganisme.setLibelle(organismeDTO.getLibelle());
 		addOrganisme.setAdresse(organismeDTO.getAdresse());
 		addOrganisme.setEmail(organismeDTO.getEmail());
@@ -69,7 +84,7 @@ public class OrganismeServiceImp implements InOrganismeService{
 		addOrganisme.setDateCreation(new Date());
 		return organismeRepository.save(addOrganisme);
 	}
-	
+
 	@Override
 	public Organisme deleteOrganismeStatut(Long id) {
 		 Organisme organisme = organismeRepository.findById(id)
@@ -78,11 +93,10 @@ public class OrganismeServiceImp implements InOrganismeService{
 		 organisme.setDateDesactivation(new Date());
 	     return  organismeRepository.save(organisme);
 	}
-	
+
 	@Override
 	public Organisme updateActivites(Long id, OrganismeDTO organismeDTO) {
 		Organisme organisme = organismeRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("Organisme", "id", id));
-		organisme.setCode(organismeDTO.getCode());
 		organisme.setLibelle(organismeDTO.getLibelle());
 		organisme.setAdresse(organismeDTO.getAdresse());
 		organisme.setEmail(organismeDTO.getEmail());
@@ -93,7 +107,7 @@ public class OrganismeServiceImp implements InOrganismeService{
 
 		return organismeRepository.save(organisme);
 	}
-	
+
 	private OrganismeDTO mapToDTO(Organisme x)
 	{
 		OrganismeDTO dto = new OrganismeDTO();
@@ -110,6 +124,6 @@ public class OrganismeServiceImp implements InOrganismeService{
 		dto.setEmail(x.getEmail());
 		return dto;
 	}
-	
-	
+
+
 }

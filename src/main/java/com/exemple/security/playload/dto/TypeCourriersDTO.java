@@ -18,18 +18,17 @@ import lombok.ToString;
 @NoArgsConstructor
 public class TypeCourriersDTO {
 	private Long id;
-	
+
 	@NotNull(message = "Libelle est obligatoire!")
 	@NotEmpty(message = "Libelle est obligatoire!")
 	private String libelle;
-	
-	@NotNull(message = "Code est obligatoire !")
-	@NotEmpty(message = "Code est obligatoire!")
+
+
 	private String code;
-	
-	
+
+
 	private String statut;
-	
+
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dateCreation;
 

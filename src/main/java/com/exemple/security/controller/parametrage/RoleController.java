@@ -32,31 +32,31 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/roles")
 @RequiredArgsConstructor
 public class RoleController {
-	
+
 	@Autowired
 	private InRoleServices roleServices;
-	
+
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
-	
+
+
 	@GetMapping("/{id}")
 	private ResponseEntity<Role> getVille(@PathVariable Long id)
 	{
 		Role role = roleServices.getRoles(id);
-		return new ResponseEntity<Role>(role, HttpStatus.OK);
+		return new ResponseEntity<>(role, HttpStatus.OK);
 	}
-	
-	
+
+
 	@GetMapping("/all")
 	public List<Role> getAllActivites() {
 		return roleServices.getAllRoles();
 	}
-	
-	
+
+
 	 @GetMapping("/allPagable")
 	public ResponseEntity<PageableResponseDTO> getAllActivitesPageable(
 			@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
@@ -65,48 +65,42 @@ public class RoleController {
 		PageableResponseDTO roles = roleServices.getAllRolesPagebal(pageNo,pageSize);
 		return new ResponseEntity<>(roles , HttpStatus.OK);
 	}
-	 
+
 	 @GetMapping("/delete/{id}")
 	 public ResponseEntity<?> deleteVillesStatus(@PathVariable Long id)
 	 {
 		  roleServices.deleteActivitesStatut(id);
-		 return new ResponseEntity<>(new MessageResponse("Role supprimée.","success") , HttpStatus.OK);
+		 return new ResponseEntity<>(new MessageResponse("Rôle supprimé.","success") , HttpStatus.OK);
 	 }
-	 
+
 	 @PostMapping
 	 public ResponseEntity<?> addActivite(@Valid @RequestBody RoleDTO roleDTO)
 	 {
-		 if(roleRepository.existsByCodeAdd(roleDTO.getCode()))
-		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-		}
+
 		if(roleRepository.existsByLibelleAdd(roleDTO.getLibelle()))
 		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le Libelle existe déjà !" , "warning"));
 		}
-		
+
 		roleServices.addActivites(roleDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Role ajoutée","success"));
+		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Rôle ajouté","success"));
 	 }
-	 
+
 	 @PutMapping("/{id}")
 	    public ResponseEntity<?> updateActivites(@PathVariable Long id, @Valid @RequestBody RoleDTO roleDTO) {
-			if(roleRepository.existsByCodeModif(roleDTO.getCode(),id))
-			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-			}
+
 			if(roleRepository.existsByLibelleModif(roleDTO.getLibelle(), id))
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 			}
 			if(roleDTO.getStatut() == null || roleDTO.getStatut() == "")
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Statut est obligatoire !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le statut est obligatoire !" , "warning"));
 			}
 	        roleServices.updateActivites(id, roleDTO) ;
-	        return new ResponseEntity<>(new MessageResponse("Role modifiée.","success"),HttpStatus.OK);
+	        return new ResponseEntity<>(new MessageResponse("Rôle modifié.","success"),HttpStatus.OK);
 	    }
-	 
+
 	 @GetMapping("/affectToUSer")
 	 public ResponseEntity<?> getAllRolesAffectToUser(@RequestParam(value = "idUser") Long id)
 	 {
@@ -117,7 +111,7 @@ public class RoleController {
 		List<RoleDTO>  roleDTOs = roleServices.getAllRoleAffectteToUser(id);
 		return new ResponseEntity<>(roleDTOs , HttpStatus.OK);
 	 }
-	 
+
 	 @GetMapping("/noAffectToUSer")
 	 public ResponseEntity<?> getAllRolesNotAffectToUser(@RequestParam(value = "idUser", required = true) Long id)
 	 {
@@ -128,15 +122,15 @@ public class RoleController {
 		List<RoleDTO> roleDTOs = roleServices.getAllRoleNotAffectteToUser(id);
 		return new ResponseEntity<>(roleDTOs , HttpStatus.OK);
 	 }
-	 
-	 
+
+
 	 @GetMapping("/listRole")
 		public List<ListApis> getAllActivitesApis() {
 			List<Role> roles  = roleServices.getAllRoles();
 			List<ListApis> listApis = roles.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());
 			return listApis;
 		}
-	 
+
 		private ListApis mapToApisList(Role role)
 		{
 			ListApis listApis = new ListApis();
@@ -145,5 +139,5 @@ public class RoleController {
 			listApis.setLibelle(role.getLibelle());
 			return listApis;
 		}
-	
+
 }

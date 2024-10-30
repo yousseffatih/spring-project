@@ -13,18 +13,18 @@ import com.exemple.security.entity.User;
 
 
 public class UserPrincipal implements UserDetails{
-	
-	
+
+
 	private User user;
-	
+
 	public UserPrincipal(User user) {
 		this.user = user;
 	}
-	
+
 	public User getUser()
 	{
 		return user;
-	}	
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -47,18 +47,18 @@ public class UserPrincipal implements UserDetails{
 	public String getUsername() {
 		return user.getUsername();
 	}
-	
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
-	
-	@Override  
+
+	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}

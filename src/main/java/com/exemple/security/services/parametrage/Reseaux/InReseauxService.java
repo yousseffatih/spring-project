@@ -9,7 +9,7 @@ import com.exemple.security.playload.dto.ReseauxDTO;
 public interface InReseauxService {
 
 	public Reseaux addReseaux(ReseauxDTO reseauxDTO);
-	
+
 	public Reseaux getReseaux(Long id);
 
 	public List<Reseaux> getAllReseaux();
@@ -22,6 +22,6 @@ public interface InReseauxService {
 
 	public Reseaux updateReseaux(Long idReseaux, ReseauxDTO reseauxDTO);
 
-	
+
 
 }

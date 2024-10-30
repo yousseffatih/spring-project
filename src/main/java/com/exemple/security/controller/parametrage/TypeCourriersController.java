@@ -34,25 +34,25 @@ public class TypeCourriersController {
 
 		@Autowired
 		private InTypeCourriersServices typeCourriersServices;
-		
+
 		@Autowired
 		private TypeCourriersRepository typeCourriersRepository;
-	
-		
+
+
 		@GetMapping("/{id}")
 		private ResponseEntity<TypeCourriers> getVille(@PathVariable Long id)
 		{
 			TypeCourriers typeCourriers = typeCourriersServices.getTypeCourriers(id);
-			return new ResponseEntity<TypeCourriers>(typeCourriers, HttpStatus.OK);
+			return new ResponseEntity<>(typeCourriers, HttpStatus.OK);
 		}
-	
-	
+
+
 		@GetMapping("/all")
 		public List<TypeCourriers> getAllActivites() {
 			return typeCourriersServices.getAllTypeCourriers();
 		}
-	
-	
+
+
 		 @GetMapping("/allPagable")
 		public ResponseEntity<PageableResponseDTO> getAllActivitesPageable(
 				@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
@@ -61,56 +61,50 @@ public class TypeCourriersController {
 			PageableResponseDTO typeC = typeCourriersServices.getAllTypeCourriersPagebal(pageNo,pageSize);
 			return new ResponseEntity<>(typeC , HttpStatus.OK);
 		}
-	 
+
 		 @GetMapping("/delete/{id}")
 		 public ResponseEntity<?> deleteVillesStatus(@PathVariable Long id)
 		 {
 			  typeCourriersServices.deleteTypeCourriersStatut(id);
-			 return new ResponseEntity<>(new MessageResponse("Supprimer succès.","success") , HttpStatus.OK);
+			 return new ResponseEntity<>(new MessageResponse("Type de courrier supprimé.","success") , HttpStatus.OK);
 		 }
-	 
+
 		 @PostMapping
 		 public ResponseEntity<?> addActivite(@Valid @RequestBody TypeCourriersDTO typeCourriersDTO)
 		 {
-			 if(typeCourriersRepository.existsByCodeAdd(typeCourriersDTO.getCode()))
-			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-			}
+
 			if(typeCourriersRepository.existsByLibelleAdd(typeCourriersDTO.getLibelle()))
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 			}
-			
+
 			typeCourriersServices.addTypeCourriers(typeCourriersDTO);
-			return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Ajouter succès.","success"));
+			return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Type de courrier ajouté.","success"));
 		 }
-	 
+
 	 	@PutMapping("/{id}")
 	    public ResponseEntity<?> updateActivites(@PathVariable Long id, @Valid @RequestBody TypeCourriersDTO typeCourriersDTO) {
-			if(typeCourriersRepository.existsByCodeModif(typeCourriersDTO.getCode(),id))
-			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-			}
+
 			if(typeCourriersRepository.existsByLibelleModif(typeCourriersDTO.getLibelle(), id))
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libelle existe déjà !" , "warning"));
 			}
 			if(typeCourriersDTO.getStatut() == null || typeCourriersDTO.getStatut() == "")
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Statut est obligatoire !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le statut est obligatoire !" , "warning"));
 			}
 	        typeCourriersServices.updateTypeCourriers(id, typeCourriersDTO) ;
-	        return new ResponseEntity<>(new MessageResponse("Modifier succès.","success"),HttpStatus.OK);
+	        return new ResponseEntity<>(new MessageResponse("Type de courrier modifié.","success"),HttpStatus.OK);
 	    }
- 
-	 
+
+
 	 	@GetMapping("/listTypeCourriers")
 		public List<ListApis> getAllActivitesApis() {
 			List<TypeCourriers> activites  = typeCourriersServices.getAllTypeCourriers();
 			List<ListApis> listApis = activites.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());
 			return listApis;
 		}
-	 
+
 		private ListApis mapToApisList(TypeCourriers activites)
 		{
 			ListApis listApis = new ListApis();

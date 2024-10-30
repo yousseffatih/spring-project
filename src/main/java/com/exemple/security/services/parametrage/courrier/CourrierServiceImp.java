@@ -15,23 +15,24 @@ import com.exemple.security.constants.GlobalConstants;
 import com.exemple.security.entity.Affectations;
 import com.exemple.security.entity.Courrier;
 import com.exemple.security.entity.Employes;
+import com.exemple.security.entity.Numero;
 import com.exemple.security.entity.OrgExpDest;
 import com.exemple.security.entity.ProcessusCourrier;
 import com.exemple.security.entity.ProcessusModel;
 import com.exemple.security.entity.TypeCourriers;
-import com.exemple.security.entity.User;
+import com.exemple.security.exception.CustomException;
 import com.exemple.security.playload.ResourceNotFoundException;
-import com.exemple.security.playload.dto.AffectationsDTO;
 import com.exemple.security.playload.dto.CourrierDTO;
 import com.exemple.security.playload.dto.ListCourrierDTO;
 import com.exemple.security.playload.dto.PageableResponseDTO;
-import com.exemple.security.playload.dto.ProcessusModelDTO;
 import com.exemple.security.repository.AffectationsRepository;
 import com.exemple.security.repository.CourrierRepository;
 import com.exemple.security.repository.EmployesRepository;
+import com.exemple.security.repository.NumeroRepository;
 import com.exemple.security.repository.ProcessusCourrierRepository;
 import com.exemple.security.repository.ProcessusModelRepository;
 import com.exemple.security.repository.UserRepository;
+import com.exemple.security.services.parametrage.Numero.InNumeroService;
 import com.exemple.security.services.parametrage.OrgExpDest.OrgExpDestService;
 import com.exemple.security.services.parametrage.TypeCourriers.InTypeCourriersServices;
 
@@ -39,51 +40,57 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CourrierServiceImp implements InCourrierServcies{
-	
+
 	@Autowired
 	private CourrierRepository courrierRepository;
-	
+
 	@Autowired
 	private ProcessusCourrierRepository processusCourrierRepository;
-	
-	
+
+
 	@Autowired
 	private AffectationsRepository affectationsRepository;
-	
-	
+
+
 	@Autowired
 	private OrgExpDestService orgExpDestService;
-	
+
 	@Autowired
 	private InTypeCourriersServices typeCourriersServices;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private EmployesRepository employesRepository;
-	
+
 	@Autowired
 	private ProcessusModelRepository processusModelRepository;
-	
-	
-	
+
+	@Autowired
+	private InNumeroService numeroService;
+
+	@Autowired
+	private NumeroRepository numeroRepository;
+
+
+
 	@Override
 	@Transactional
 	public CourrierDTO addCourrier(CourrierDTO courrierDTO) {
-		
+
 		Courrier courrier = new Courrier();
-		
+
 		OrgExpDest orgExpDestSrc = orgExpDestService.getOrgExpDest(courrierDTO.getIdOrgExpDestSrc());
 		OrgExpDest orgExpDestCible = orgExpDestService.getOrgExpDest(courrierDTO.getIdOrgExpDestCible());
 		Affectations affectations = affectationsRepository .findByIdStatut(courrierDTO.getIdAffectations()).orElseThrow(()-> new ResourceNotFoundException("Affectations", "id", courrierDTO.getIdAffectations()));
 		Employes employes = employesRepository.findById(courrierDTO.getIdEmployes()).orElseThrow(()-> new ResourceNotFoundException("Employes", "id", courrierDTO.getIdEmployes()));
-		
+
 		TypeCourriers typeCourriers = typeCourriersServices.getTypeCourriers(courrierDTO.getIdTypeCourriers());
-		
+
 		List<ProcessusModel> processusModels = processusModelRepository.findAllByTypeID(courrierDTO.getIdTypeCourriers());
-		
-		
+
+
 		courrier.setAffectations(affectations);
 		courrier.setTypeCourriers(typeCourriers);
 		courrier.setOrgExpDestCible(orgExpDestCible);
@@ -95,49 +102,74 @@ public class CourrierServiceImp implements InCourrierServcies{
 		courrier.setInterne(courrierDTO.getInterne());
 		courrier.setDateCreation(new Date());
 		courrier.setLibelle(courrierDTO.getLibelle());
-		courrier.setCode(courrierDTO.getCode());
+
+
+		List<Numero> numeros = numeroRepository.findByCode("Courrier");
+		if(numeros != null && !numeros.isEmpty())
+		{
+			Numero numero = numeros.get(0);
+			numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
+
+			numeroRepository.save(numero);
+			courrier.setCode(numeroService.genrateNumero(numero));
+		}
+
 		courrier.setDateEchuance(courrierDTO.getDateEchuance());
 		courrier.setDateCourrirer(courrierDTO.getDateCourrirer());
 		courrier.setNCourrier(courrierDTO.getNCourrier());
-		
-		ProcessusCourrier pc = new ProcessusCourrier();
+
 		Courrier courrier2 = courrierRepository.save(courrier);
 		int index = 0;
 		for(ProcessusModel  p : processusModels)
 		{
 			index += 1;
 			ProcessusCourrier processusCourrier = new ProcessusCourrier();
-			processusCourrier.setCode(courrierDTO.getCode()+"_PC" + index);
-			processusCourrier.setLibelle(courrierDTO.getLibelle()+"_PC" + index);
+
+			List<Numero> nums = numeroRepository.findByCode("ProcessusCourrier");
+			if(nums != null && !nums.isEmpty())
+			{
+				Numero numero = numeros.get(0);
+				numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
+
+				numeroRepository.save(numero);
+				processusCourrier.setCode(numeroService.genrateNumero(numero));
+			}
+
+			processusCourrier.setLibelle(courrierDTO.getLibelle()+ "_"+ GlobalConstants.PFIX_PROCESSUS_COURRIER + index);
 			processusCourrier.setEmployes(employes);
 			processusCourrier.setProcessusModel(p);
 			processusCourrier.setDateCreation(new Date());
 			processusCourrier.setCourrier(courrier2);
 			processusCourrier.setDateDebut(courrierDTO.getDateCourrirer());
 			processusCourrier.setDateFin(courrierDTO.getDateEchuance());
-			if(p.equals(processusModels.get(0)))
+			processusCourrier.setOrderPM(p.getOrderPM());
+
+			if(p.getOrderPM().equals(1))
 			{
 				processusCourrier.setStatut(GlobalConstants.STATUT_ACTIF);
-				pc = processusCourrier;
+				processusCourrierRepository.save(processusCourrier);
+
+				courrier.setProcessusCourrier(processusCourrier);
+				courrier2 = courrierRepository.save(courrier);
 			} else {
+
 				processusCourrier.setStatut(GlobalConstants.STATUT_PLANIFIER);
+				processusCourrierRepository.save(processusCourrier);
 			}
-			
-			processusCourrierRepository.save(processusCourrier);
+
 		}
-		courrier.setProcessusCourrier(pc);
-		courrier2 = courrierRepository.save(courrier);
+
 		return maptoDto(courrier2);
 	}
-	
+
 	@Override
 	public List<CourrierDTO> getAllCourrier() {
 		List<Courrier> courriers = courrierRepository.findAllWithStatus();
-		List<CourrierDTO> courrierDTOs = new ArrayList<CourrierDTO>();
+		List<CourrierDTO> courrierDTOs = new ArrayList<>();
 		courrierDTOs = courriers.stream().map(e -> maptoDto(e)).collect(Collectors.toList());
 		return courrierDTOs;
 	}
-	
+
 	@Override
 	public CourrierDTO getCourrierId(Long id)
 	{
@@ -146,10 +178,10 @@ public class CourrierServiceImp implements InCourrierServcies{
 		courrierDTO = maptoDto(courrier);
 		return courrierDTO;
 	}
-	
+
 	@Override
 	public PageableResponseDTO getAllCourriersPagebal(int pageNo , int pageSize) {
-		Pageable pageable = PageRequest.of(pageNo, pageSize); 
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<Courrier> a = courrierRepository.findallStatutsPa(pageable);
 		List<CourrierDTO> activites = a.getContent().stream().map(e -> maptoDto(e)).collect(Collectors.toList());
 		PageableResponseDTO  pageableResponseDTO = new PageableResponseDTO();
@@ -161,10 +193,18 @@ public class CourrierServiceImp implements InCourrierServcies{
 		pageableResponseDTO.setLast(a.isLast());
 		return pageableResponseDTO;
 	}
-	
+
 	@Override
-	public PageableResponseDTO filterCourriers(String nCourrier,Long idOrgExpDestSrc,Long idOrgExpDestCible,String dateCourrirer,String dateEchuance, Long idTypeCourriers,Long idProcessusModel,int pageNo,int pageSize) {
-		Pageable pageable = PageRequest.of(pageNo, pageSize); 
+	public PageableResponseDTO filterCourriers(String nCourrier,
+			Long idOrgExpDestSrc,
+			Long idOrgExpDestCible,
+			String dateCourrirer,
+			String dateEchuance,
+			Long idTypeCourriers,
+			Long idProcessusModel,
+			int pageNo,
+			int pageSize) {
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<ListCourrierDTO> list = courrierRepository.findFilteredCourrier(nCourrier, idOrgExpDestSrc, idOrgExpDestCible,idTypeCourriers,  dateCourrirer, dateEchuance, idProcessusModel,pageable);
 		PageableResponseDTO  pageableResponseDTO = new PageableResponseDTO();
 		pageableResponseDTO.setContent(list.getContent());
@@ -175,8 +215,8 @@ public class CourrierServiceImp implements InCourrierServcies{
 		pageableResponseDTO.setLast(list.isLast());
 		return pageableResponseDTO;
 	}
-	
-	
+
+
 	@Override
 	public Courrier deleteCourirrerStatut(Long id) {
 		Courrier courrier = courrierRepository.findByIdStatut(id)
@@ -191,22 +231,26 @@ public class CourrierServiceImp implements InCourrierServcies{
 		 }
 		 return  courrierRepository.save(courrier);
 	}
-	
+
 	@Override
 	@Transactional
 	public CourrierDTO updateCourrir(CourrierDTO courrierDTO ,Long id) {
-		
-		Courrier courrier = courrierRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("Courrier", "id", id));;
-		
+
+		Courrier courrier = courrierRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("Courrier", "id", id));
+		List<ProcessusCourrier> processusCourriers = processusCourrierRepository.findAllByIDCourriersStatut(id);
+
+		boolean containsStatutValide = processusCourriers.stream()
+			    .anyMatch(processus -> processus.getStatut() == GlobalConstants.STATUT_VALIDER);
+
 		OrgExpDest orgExpDestSrc = orgExpDestService.getOrgExpDest(courrierDTO.getIdOrgExpDestSrc());
 		OrgExpDest orgExpDestCible = orgExpDestService.getOrgExpDest(courrierDTO.getIdOrgExpDestCible());
 		Affectations affectations = affectationsRepository .findByIdStatut(courrierDTO.getIdAffectations()).orElseThrow(()-> new ResourceNotFoundException("Affectations", "id", courrierDTO.getIdAffectations()));
 		Employes employes = employesRepository.findById(courrierDTO.getIdEmployes()).orElseThrow(()-> new ResourceNotFoundException("Employes", "id", courrierDTO.getIdEmployes()));
-		
+
 		TypeCourriers typeCourriers = typeCourriersServices.getTypeCourriers(courrierDTO.getIdTypeCourriers());
-		
+
 		List<ProcessusModel> processusModels = processusModelRepository.findAllByTypeID(courrierDTO.getIdTypeCourriers());
-		
+
 		courrier.setAffectations(affectations);
 		courrier.setTypeCourriers(typeCourriers);
 		courrier.setOrgExpDestCible(orgExpDestCible);
@@ -222,37 +266,51 @@ public class CourrierServiceImp implements InCourrierServcies{
 		courrier.setDateEchuance(courrierDTO.getDateEchuance());
 		courrier.setDateCourrirer(courrierDTO.getDateCourrirer());
 		courrier.setNCourrier(courrierDTO.getNCourrier());
-		
-		ProcessusCourrier pc = new ProcessusCourrier();
+
 		Courrier courrier2 = courrierRepository.save(courrier);
 		int index = 0;
-		for(ProcessusModel  p : processusModels)
+		if(!containsStatutValide)
 		{
-			index += 1;
-			ProcessusCourrier processusCourrier = new ProcessusCourrier();
-			processusCourrier.setCode(courrierDTO.getCode()+"_PC" + index);
-			processusCourrier.setLibelle(courrierDTO.getLibelle()+"_PC" + index);
-			processusCourrier.setEmployes(employes);
-			processusCourrier.setProcessusModel(p);
-			processusCourrier.setDateModification(new Date());
-			processusCourrier.setCourrier(courrier2);
-			processusCourrier.setDateDebut(courrierDTO.getDateCourrirer());
-			processusCourrier.setDateFin(courrierDTO.getDateEchuance());
-			if(p.equals(processusModels.get(0)))
+			for(ProcessusCourrier processusCourrier : processusCourriers)
 			{
-				processusCourrier.setStatut(courrierDTO.getStatut().equals("1") ? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
-				pc = processusCourrier;
-			} else {
-				processusCourrier.setStatut(GlobalConstants.STATUT_PLANIFIER);
+				processusCourrier.setStatut(GlobalConstants.STATUT_DELETE);
 			}
-			
-			processusCourrierRepository.save(processusCourrier);
+			for(ProcessusModel  p : processusModels)
+			{
+				index += 1;
+				ProcessusCourrier processusCourrier = new ProcessusCourrier();
+				processusCourrier.setCode(courrier2.getCode()+"_"+ GlobalConstants.PFIX_PROCESSUS_COURRIER + index);
+
+				processusCourrier.setLibelle(courrierDTO.getLibelle()+ "_"+ GlobalConstants.PFIX_PROCESSUS_COURRIER + index);
+				processusCourrier.setEmployes(employes);
+				processusCourrier.setProcessusModel(p);
+				processusCourrier.setDateModification(new Date());
+				processusCourrier.setCourrier(courrier2);
+				processusCourrier.setDateDebut(courrierDTO.getDateCourrirer());
+				processusCourrier.setDateFin(courrierDTO.getDateEchuance());
+				processusCourrier.setOrderPM(p.getOrderPM());
+
+				if(p.getOrderPM().equals(1))
+				{
+					processusCourrier.setStatut(GlobalConstants.STATUT_ACTIF);
+					processusCourrierRepository.save(processusCourrier);
+
+					courrier.setProcessusCourrier(processusCourrier);
+					courrier2 = courrierRepository.save(courrier);
+				} else {
+
+					processusCourrier.setStatut(GlobalConstants.STATUT_PLANIFIER);
+					processusCourrierRepository.save(processusCourrier);
+				}
+
+			}
+		} else {
+			throw new CustomException("Statut du courrier invalid!");
 		}
-		courrier.setProcessusCourrier(pc);
-		courrier2 = courrierRepository.save(courrier);
+
 		return maptoDto(courrier2) ;
 	}
-	
+
 	private CourrierDTO maptoDto(Courrier courrier)
 	{
 		CourrierDTO dto = new CourrierDTO();
@@ -263,20 +321,37 @@ public class CourrierServiceImp implements InCourrierServcies{
 		dto.setDateCreation(courrier.getDateCreation());
 		dto.setDateDesactivation(courrier.getDateDesactivation());
 		dto.setDateModification(courrier.getDateModification());
-		
+
 		dto.setIdOrgExpDestSrc(courrier.getOrgExpDestSrc().getId());
+		dto.setLibelleOrgExpDestSrc(courrier.getOrgExpDestSrc().getLibelle());
+
 		dto.setIdOrgExpDestCible(courrier.getOrgExpDestCible().getId());
+		dto.setLibelleOrgExpDestCible(courrier.getOrgExpDestCible().getLibelle());
+
 		dto.setIdTypeCourriers(courrier.getTypeCourriers().getId());
+		dto.setLibelleTypeCourriers(courrier.getTypeCourriers().getLibelle());
+
 		dto.setIdTypeProcessusCourrier(courrier.getProcessusCourrier().getId());
-		dto.setIdEmployes(courrier.getEmployes().getId());
-		dto.setIdAffectations(courrier.getAffectations().getId());
+		dto.setLibelleTypeProcessusCourrier(courrier.getProcessusCourrier().getLibelle());
+
+		if(courrier.getEmployes() != null) {
+			dto.setIdEmployes(courrier.getEmployes().getId());
+			dto.setLibelleEmployes(courrier.getEmployes().getLibelle());
+		}
+
+		if(courrier.getAffectations() != null) {
+			dto.setIdAffectations(courrier.getAffectations().getId());
+			dto.setLibelleAffectations(courrier.getAffectations().getLibelle());
+		}
+
 		dto.setIdProcessusCourrier(courrier.getProcessusCourrier().getId());
-		
+		dto.setLibelleAffectations(courrier.getProcessusCourrier().getLibelle());
+
 		dto.setNCourrier(courrier.getNCourrier());
 		dto.setDateCourrirer(courrier.getDateCourrirer());
 		dto.setDateEchuance(courrier.getDateEchuance());
 		dto.setInterne(courrier.getInterne());
 		return dto;
 	}
-	
+
 }

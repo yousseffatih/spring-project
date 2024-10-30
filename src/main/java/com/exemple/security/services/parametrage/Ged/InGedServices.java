@@ -8,10 +8,13 @@ import com.exemple.security.playload.dto.SaveGedBodyDTO;
 
 public interface InGedServices {
 
-	public List<GedDTO> saveImages(SaveGedBodyDTO saveGedBodyDTO) throws IOException;
-
-	List<GedDTO> getAllGed(String fielName);
-
 	void deleteGed(Long id);
+
+
+	List<GedDTO> getAllGed(String context);
+
+	void saveImages(SaveGedBodyDTO saveGedBodyDTO) throws IOException;
+
+
 
 }

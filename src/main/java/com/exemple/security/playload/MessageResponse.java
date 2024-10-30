@@ -11,8 +11,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageResponse {
-	
+
 	private String message;
 	private String type;
-	
+
 }

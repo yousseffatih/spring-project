@@ -14,40 +14,43 @@ import com.exemple.security.entity.Fonctions;
 
 @Repository
 public interface FonctionsRepository extends JpaRepository<Fonctions, Long>{
-	
+
+	@Override
 	Optional<Fonctions> findById(Long id);
-		
+
 	@Query("select f"
 			+ " from Fonctions f "
-			+ " where f.statut in ('0','1')")
+			+ " where f.statut in ('0','1') "
+			+ " order by f.libelle")
 	List<Fonctions> findAllStatus();
-	
+
 	@Query("select f"
 			+ " from Fonctions f "
 			+ " where f.statut in ('0','1')"
 			+ "and f.id = :val")
 	Optional<Fonctions> findByIdStatut(@Param("val") Long val);
-	
-	
+
+
 	@Query("select f"
 			+ " from Fonctions f "
-			+ " where f.statut in ('0','1')")
+			+ " where f.statut in ('0','1') "
+			+ " order by f.libelle")
     Page<Fonctions> findallStatutsPa(Pageable pageable);
-	
+
 	@Query("select "
 			+ " case when count(f)> 0 then true "
 			+ " else false end "
 			+ " from Fonctions f "
 			+ " where lower(f.code) = lower(:val)  and f.statut in('0','1')")
 	boolean existsByCodeAdd(@Param("val") String val);
-	
+
 	@Query("select "
 			+ " case when count(f)> 0 then true "
 			+ " else false end "
 			+ " from Fonctions f "
 			+ " where lower(f.libelle) = lower(:val)  and f.statut in('0','1')")
 	boolean existsByLibelleAdd(@Param("val") String val);
-	
+
 	@Query("select "
 			+ " case when count(f)> 0 then true "
 			+ " else false end "
@@ -55,7 +58,7 @@ public interface FonctionsRepository extends JpaRepository<Fonctions, Long>{
 			+ " where lower(code) like lower(:val) and f.statut not in('-1','-2')"
 			+ " and f.id <> :id ")
 	boolean existsByCodeModif(@Param("val") String val, @Param("id") Long id);
-	
+
 	@Query("select "
 			+ " case when count(f)> 0 then true "
 			+ " else false end "

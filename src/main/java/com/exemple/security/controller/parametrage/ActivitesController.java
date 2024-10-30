@@ -33,29 +33,29 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/activites")
 @RequiredArgsConstructor
 public class ActivitesController {
-	
-	
+
+
 	@Autowired
 	private InActivitiesServices activitiesServices;
-	
+
 	@Autowired
 	private ActivitesRepository activitesRepository;
-	
-	
+
+
 	@GetMapping("/{id}")
 	private ResponseEntity<Activites> getVille(@PathVariable Long id)
 	{
 		Activites activites = activitiesServices.getActivities(id);
-		return new ResponseEntity<Activites>(activites, HttpStatus.OK);
+		return new ResponseEntity<>(activites, HttpStatus.OK);
 	}
-	
-	
+
+
 	//	@GetMapping("/all")
 	//	public List<Activites> getAllActivites() {
 	//		return activitiesServices.getAllActivities();
 	//	}
-	
-	
+
+
 	 @GetMapping("/allPagable")
 	public ResponseEntity<PageableResponseDTO> getAllActivitesPageable(
 			@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
@@ -64,57 +64,51 @@ public class ActivitesController {
 		PageableResponseDTO activities = activitiesServices.getAllActivitesPagebal(pageNo,pageSize);
 		return new ResponseEntity<>(activities , HttpStatus.OK);
 	}
-	 
+
 	 @GetMapping("/delete/{id}")
 	 public ResponseEntity<?> deleteVillesStatus(@PathVariable Long id)
 	 {
 		  activitiesServices.deleteActivitesStatut(id);
-		 return new ResponseEntity<>(new MessageResponse("Activiter supprimée.","success") , HttpStatus.OK);
+		 return new ResponseEntity<>(new MessageResponse("Activité supprimée.","success") , HttpStatus.OK);
 	 }
-	 
+
 	 @PostMapping
 	 public ResponseEntity<?> addActivite(@Valid @RequestBody ActivitesDTO activitesDTO)
 	 {
-		 if(activitesRepository.existsByCodeAdd(activitesDTO.getCode()))
-		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-		}
+
 		if(activitesRepository.existsByLibelleAdd(activitesDTO.getLibelle()))
 		{
-			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+			return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libellé existe déjà !" , "warning"));
 		}
-		
+
 		activitiesServices.addActivites(activitesDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Activiter ajoutée.","success"));
+		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Activité ajoutée.","success"));
 	 }
-	 
+
 	 @PutMapping("/{id}")
 	    public ResponseEntity<?> updateActivites(@PathVariable Long id, @Valid @RequestBody ActivitesDTO activitesDTO) {
 		    System.out.println("this is th problem :"+ activitesDTO.toString());
-			if(activitesRepository.existsByCodeModif(activitesDTO.getCode(),id))
-			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Code existe déjà !" , "warning"));
-			}
+
 			if(activitesRepository.existsByLibelleModif(activitesDTO.getLibelle(), id))
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Libelle existe déjà !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le libellé existe déjà !" , "warning"));
 			}
 			if(activitesDTO.getStatut() == null || activitesDTO.getStatut() == "")
 			{
-				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Statut est obligatoire !" , "warning"));
+				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le statut est obligatoire !" , "warning"));
 			}
 	        activitiesServices.updateActivites(id, activitesDTO) ;
-	        return new ResponseEntity<>(new MessageResponse("Activiter modifiée","success"),HttpStatus.OK);
+	        return new ResponseEntity<>(new MessageResponse("Activité modifiée","success"),HttpStatus.OK);
 	    }
-	 
-	 
+
+
 	 @GetMapping("/listActivite")
 		public List<ListApis> getAllActivitesApis() {
 			List<Activites> activites  = activitiesServices.getAllActivities();
 			List<ListApis> listApis = activites.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());
 			return listApis;
 		}
-	 
+
 		private ListApis mapToApisList(Activites activites)
 		{
 			ListApis listApis = new ListApis();
@@ -123,5 +117,5 @@ public class ActivitesController {
 			listApis.setLibelle(activites.getLibelle());
 			return listApis;
 		}
-	
+
 }

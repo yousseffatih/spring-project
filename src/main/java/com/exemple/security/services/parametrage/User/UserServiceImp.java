@@ -10,14 +10,14 @@ import com.exemple.security.repository.UserRepository;
 
 @Service
 public class UserServiceImp implements InUserService{
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Override
 	public List<User> getUsers() {
 		List<User> list = userRepository.findUsersByStatut();
 		return list;
-		
+
 	}
 }

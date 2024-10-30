@@ -24,9 +24,9 @@ public class TypeCourriers extends ClassEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	public TypeCourriers(Long id, String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
-        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation); 
+        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
         this.id = id;
     }
 }

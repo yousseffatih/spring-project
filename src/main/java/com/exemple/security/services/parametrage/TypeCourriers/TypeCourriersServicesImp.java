@@ -11,41 +11,48 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.exemple.security.constants.GlobalConstants;
-import com.exemple.security.entity.Activites;
+import com.exemple.security.entity.Numero;
 import com.exemple.security.entity.TypeCourriers;
 import com.exemple.security.playload.ResourceNotFoundException;
-import com.exemple.security.playload.dto.ActivitesDTO;
 import com.exemple.security.playload.dto.PageableResponseDTO;
 import com.exemple.security.playload.dto.TypeCourriersDTO;
+import com.exemple.security.repository.NumeroRepository;
 import com.exemple.security.repository.TypeCourriersRepository;
+import com.exemple.security.services.parametrage.Numero.InNumeroService;
 
 @Service
 public class TypeCourriersServicesImp implements InTypeCourriersServices{
 
 	@Autowired
 	private TypeCourriersRepository typeCourriersRepository;
-	
+
+	@Autowired
+	private InNumeroService numeroService;
+
+	@Autowired
+	private NumeroRepository numeroRepository;
+
 	public TypeCourriersServicesImp (TypeCourriersRepository typeCourriersRepository) {
 		this.typeCourriersRepository = typeCourriersRepository;
 	}
 
-	
+
 	@Override
 	public List<TypeCourriers> getAllTypeCourriers() {
 		List<TypeCourriers> typeCourriers = typeCourriersRepository.findAllWithStatus();
 		return typeCourriers;
 	}
-	
+
 	@Override
 	public TypeCourriers getTypeCourriers(Long id)
 	{
 		TypeCourriers typeCourriers = typeCourriersRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("TypeCourriers", "id", id));
 		return typeCourriers;
 	}
-	
+
 	@Override
 	public PageableResponseDTO getAllTypeCourriersPagebal(int pageNo , int pageSize) {
-		Pageable pageable = PageRequest.of(pageNo, pageSize); 
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<TypeCourriers> v = typeCourriersRepository.findallStatutsPa(pageable);
 		List<TypeCourriersDTO> typeCourriers = v.getContent().stream().map(e -> mapToDTO(e)).collect(Collectors.toList());
 		PageableResponseDTO  pageableResponseDTO = new PageableResponseDTO();
@@ -57,17 +64,27 @@ public class TypeCourriersServicesImp implements InTypeCourriersServices{
 		pageableResponseDTO.setLast(v.isLast());
 		return pageableResponseDTO;
 	}
-	
+
 	@Override
 	public TypeCourriers addTypeCourriers(TypeCourriersDTO typeCourriersDTO) {
 		TypeCourriers addTypeCourriers=new TypeCourriers();
-		addTypeCourriers.setCode(typeCourriersDTO.getCode());
+
+		List<Numero> numeros = numeroRepository.findByCode("TypeCourriers");
+		if(numeros != null && !numeros.isEmpty())
+		{
+			Numero numero = numeros.get(0);
+			numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
+
+			numeroRepository.save(numero);
+			addTypeCourriers.setCode(numeroService.genrateNumero(numero));
+		}
+
 		addTypeCourriers.setLibelle(typeCourriersDTO.getLibelle());
 		addTypeCourriers.setStatut(GlobalConstants.STATUT_ACTIF);
 		addTypeCourriers.setDateCreation(new Date());
 		return typeCourriersRepository.save(addTypeCourriers);
 	}
-	
+
 	@Override
 	public TypeCourriers deleteTypeCourriersStatut(Long id) {
 		TypeCourriers typeCourriers = typeCourriersRepository.findById(id)
@@ -76,18 +93,17 @@ public class TypeCourriersServicesImp implements InTypeCourriersServices{
 		 typeCourriers.setDateDesactivation(new Date());
 	     return  typeCourriersRepository.save(typeCourriers);
 	}
-	
+
 	@Override
 	public TypeCourriers updateTypeCourriers(Long id, TypeCourriersDTO typeCourriersDTO) {
 		TypeCourriers typeCourriers = typeCourriersRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("TypeCourriers", "id", id));
-		typeCourriers.setCode(typeCourriersDTO.getCode());
 		typeCourriers.setLibelle(typeCourriersDTO.getLibelle());
 		typeCourriers.setDateModification(new Date());
 		typeCourriers.setStatut(typeCourriersDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
 
 		return typeCourriersRepository.save(typeCourriers);
 	}
-	
+
 	private TypeCourriersDTO mapToDTO(TypeCourriers x)
 	{
 		TypeCourriersDTO dto = new TypeCourriersDTO();

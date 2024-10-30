@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,23 +26,23 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/processusCourriers")
 @RequiredArgsConstructor
 public class ProcessusCourriersController {
-	
+
 
 	@Autowired
 	private InProcessusCourrierServices processusCourrierServices;
-	
+
 	@Autowired
 	private ProcessusCourrierRepository processusCourrierRepository;
-	
-	
+
+
 	@GetMapping("/{id}")
 	private ResponseEntity<ProcessusCourrierDTO> getProcessusCourrier(@PathVariable Long id)
 	{
 		ProcessusCourrierDTO processusCourrierDTO = processusCourrierServices.getProcessusCourrier(id);
-		
-		return new ResponseEntity<ProcessusCourrierDTO>(processusCourrierDTO, HttpStatus.OK);
+
+		return new ResponseEntity<>(processusCourrierDTO, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/allPagable/idC={id}")
 	public ResponseEntity<PageableResponseDTO> getAllActivitesPageable(
 			@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
@@ -53,16 +52,28 @@ public class ProcessusCourriersController {
 		PageableResponseDTO processusModel = processusCourrierServices.getAllProcessusCourrier(pageNo,pageSize, id);
 		return new ResponseEntity<>(processusModel , HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/validePC")
 	public ResponseEntity<?> validateProcessusC(@Valid @RequestBody ValidePCdto validePCdto)
 	{
 		try {
 			processusCourrierServices.validateProcessusCourrier(validePCdto);
-			return new ResponseEntity<>(new MessageResponse("Validation success.","success"),HttpStatus.OK);
+			return new ResponseEntity<>(new MessageResponse("Validation réussie.","success"),HttpStatus.OK);
 		} catch (CustomException e) {
 			return new ResponseEntity<>(new MessageResponse(e.getMessage(),"warning"),HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@GetMapping("/annulerValidationPC")
+	public ResponseEntity<?> annulationValidation(@RequestParam(value = "idPC" , defaultValue = "0", required = false) Long idPC)
+	{
+		try {
+			processusCourrierServices.annulerValidation(idPC);
+			return new ResponseEntity<>(new MessageResponse("Annulation réussie.","success"),HttpStatus.OK);
+
+		} catch (CustomException e) {
+			return new ResponseEntity<>(new MessageResponse(e.getMessage(),"warning"),HttpStatus.BAD_REQUEST);
+		}
+
+	}
 }
-	

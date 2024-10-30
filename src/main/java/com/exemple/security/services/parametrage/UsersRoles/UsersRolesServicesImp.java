@@ -27,64 +27,64 @@ public class UsersRolesServicesImp implements InUserRolesServices{
 
     @Autowired
     private UserRoleRepository userRoleRepository;
-    
-    
+
+
     @Override
     public void affectRoleToUser(Long userId, Long roleId) {
-        
+
         User user = userRepository.findById(userId)
         		.orElseThrow(()-> new ResourceNotFoundException("User", "id", userId));
-        
-		List<UserRole> userRoles = userRoleRepository.getDroits(user.getId());		
+
+		List<UserRole> userRoles = userRoleRepository.getDroits(user.getId());
 		user.setRoles(userRoles);
 
         Role role = roleRepository.findByIdStatut(roleId)
         		.orElseThrow(()-> new ResourceNotFoundException("Role", "id", roleId));
-        
+
         boolean roleAlreadyAffected = user.getRoles().stream()
                 .anyMatch(userRole -> userRole.getRole().getId().equals(roleId));
-        
+
         if(roleAlreadyAffected)
         {
         	throw new CustomException("Ce rôle est déjà affecté à cet utilisateur !");
         }
-        
+
         UserRole userRole = new UserRole();
     	userRole.setRole(role);
     	userRole.setUser(user);
     	userRole.setDateCreation(new Date());
     	userRole.setStatut(GlobalConstants.STATUT_ACTIF);
     	userRoleRepository.save(userRole);
-                
+
     }
-    
+
     @Override
     public void unaffectRoleToUser(Long userId, Long roleId) {
-        
+
         User user = userRepository.findById(userId)
         		.orElseThrow(()-> new ResourceNotFoundException("User", "id", userId));
-        
+
         List<UserRole> userRoles = userRoleRepository.getDroits(userId);
-        
+
 		user.setRoles(userRoles);
-				
-		
+
+
         Role role = roleRepository.findByIdStatut(roleId)
         		.orElseThrow(()-> new ResourceNotFoundException("Role", "id", roleId));
-        
+
         boolean roleAlreadyAffected = user.getRoles().stream()
                 .anyMatch(userRole -> userRole.getRole().getId().equals(roleId));
-        
-        
+
+
         if(!roleAlreadyAffected)
         {
         	throw new CustomException("Ce rôle n'est pas affecté à cet utilisateur !");
         }
-        
+
     	UserRole userRole = userRoleRepository.findByUserAndRole(userId, roleId);
     	userRole.setDateDesactivation(new Date());
     	userRole.setStatut(GlobalConstants.STATUT_DELETE);
     	userRoleRepository.save(userRole);
-        	
+
     }
 }

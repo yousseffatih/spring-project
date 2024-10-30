@@ -23,37 +23,38 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-	
+
+	@Autowired
 	private AuthentificationServices authentificationServices;
-	
+
 	@Autowired
     public void Authentication(AuthentificationServices authentificationServices) {
         this.authentificationServices = authentificationServices;
     }
-	
+
 	@PostMapping("/singup")
 	public ResponseEntity<UserPrincipal> singUp(@Valid @RequestBody SingUpRequest singUpRequest)
 	{
-		
+
 		return ResponseEntity.ok(authentificationServices.singup(singUpRequest));
 	}
-	
+
 	@PostMapping("/signIn")
 	public ResponseEntity<JwtAythentication> singIn(@Valid @RequestBody SingInRequest singInRequest)
 	{
 		return ResponseEntity.ok(authentificationServices.singIn(singInRequest));
 	}
-	
+
 	@PostMapping("/refresh")
 	public ResponseEntity<JwtAythentication> singIn(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest)
 	{
 		return ResponseEntity.ok(authentificationServices.refreshToken(refreshTokenRequest));
 	}
-	
+
 	@PostMapping("/user")
 	public ResponseEntity<User> getUser(@Valid @RequestBody SingInRequest singInRequest)
 	{
 		User user = authentificationServices.getUser(singInRequest.getEmail());
-		return new ResponseEntity<User>(user,HttpStatus.OK);
+		return new ResponseEntity<>(user,HttpStatus.OK);
 	}
 }

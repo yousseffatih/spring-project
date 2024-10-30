@@ -5,7 +5,6 @@ package com.exemple.security.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,10 +26,10 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	
+
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	private JWTAuthenticationFilter jwtFilter;
 
@@ -41,7 +40,7 @@ public class SecurityConfig {
 			 .cors(cors -> cors.configurationSource(request -> {
 	             CorsConfiguration config = new CorsConfiguration();
 	             config.setAllowCredentials(true);
-	             config.addAllowedOrigin("http://localhost:5173"); 
+	             config.addAllowedOrigin("http://localhost:5173");
 	             config.addAllowedHeader("*");
 	             config.addAllowedMethod("*");
 	             return config;
@@ -57,17 +56,17 @@ public class SecurityConfig {
 			//.authenticationProvider(authenticationProvider())
 			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		//http.formLogin(Customizer.withDefaults());
-		
+
 		 return http.build();
 	}
-	
+
 //	@Bean
 //	public UserDetailsService userDetailsService( ) {
 //		UserDetails user1 = User.withDefaultPasswordEncoder().username("yassin").password("y@123").roles("USER").build();
 //		UserDetails user2 = User.withDefaultPasswordEncoder().username("zakaria").password("y@123").roles("ADMIN").build();
 //		return new InMemoryUserDetailsManager(user1,user2);
 //	}
-	
+
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -75,12 +74,12 @@ public class SecurityConfig {
 		provider.setUserDetailsService(userDetailsService);
 		return provider;
 	}
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();

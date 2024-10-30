@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 public class SingInRequest {
-	
+
 	@NotNull(message = "Email est obligatoire !")
 	@NotEmpty(message = "Email est obligatoire!")
 	private String email;
-	
+
 	@NotNull(message = "Password est obligatoire !")
 	@NotEmpty(message = "Password est obligatoire!")
 	private String password;

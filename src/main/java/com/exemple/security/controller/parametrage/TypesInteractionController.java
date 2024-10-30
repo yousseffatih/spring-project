@@ -99,7 +99,7 @@ public class TypesInteractionController {
 	    }
 
 
-	 @GetMapping("/listActivite")
+	 @GetMapping("/listTypesInteraction")
 		public List<ListApis> getAllActivitesApis() {
 			List<TypesInteraction> activites  = typeInstractionService.getAllTypesInteraction();
 			List<ListApis> listApis = activites.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());

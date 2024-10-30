@@ -99,7 +99,7 @@ public class TypesClientsController {
 	    }
 
 
-	 @GetMapping("/listActivite")
+	 @GetMapping("/listTypesClients")
 		public List<ListApis> getAllActivitesApis() {
 			List<TypesClients> typesClients  = typesClientService.getAllTypesClients();
 			List<ListApis> listApis = typesClients.stream().map(e -> mapToApisList(e)).collect(Collectors.toList());

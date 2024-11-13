@@ -145,7 +145,7 @@ public class ProcessusModelServcieImp implements InProcessusModelService{
 		processusModel.setLibelle(processusModelDTO.getLibelle());
 		processusModel.setDuree(processusModelDTO.getDuree());
 		processusModel.setOrderPM(processusModelDTO.getOrderPM());
-		processusModel.setStatut(processusModelDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		processusModel.setStatut(GlobalConstants.getStatusFromDescription(processusModelDTO.getStatut()));
 
 
 		ProcessusModel processusModel2 = processusModelRepository.save(processusModel);
@@ -182,7 +182,7 @@ public class ProcessusModelServcieImp implements InProcessusModelService{
         dto.setDateCreation(processusModel.getDateCreation());
         dto.setDateDesactivation(processusModel.getDateDesactivation() );
         dto.setDateModification(processusModel.getDateModification());
-		dto.setStatut(processusModel.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(processusModel.getStatut()));
         dto.setDuree(processusModel.getDuree());
         dto.setOrderPM(processusModel.getOrderPM());
         return dto;

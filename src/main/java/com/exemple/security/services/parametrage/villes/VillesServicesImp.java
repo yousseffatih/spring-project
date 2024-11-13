@@ -59,9 +59,9 @@ public class VillesServicesImp implements InVillesServices{
 	}
 
 	@Override
-	public Villes getVille(Long id) {
+	public VillesDTO getVille(Long id) {
 		Villes villes = villesRepository.findByIdStatut(id).orElseThrow(() -> new ResourceNotFoundException("ville", "id", id));
-		return villes;
+		return mapToDTO(villes);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class VillesServicesImp implements InVillesServices{
 		Villes ville = villesRepository.findByIdStatut(idVilles).orElseThrow(() ->  new ResourceNotFoundException("ville", "id", idVilles));
 		ville.setLibelle(villes.getLibelle());
 		ville.setDateModification(new Date());
-		ville.setStatut(villes.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		ville.setStatut(GlobalConstants.getStatusFromDescription(villes.getStatut()));
 
 		return villesRepository.save(ville);
 	}
@@ -122,7 +122,7 @@ public class VillesServicesImp implements InVillesServices{
 		dto.setDateCreation(x.getDateCreation());
 		dto.setDateModification(x.getDateModification());
 		dto.setDateDesactivation(x.getDateDesactivation());
-		dto.setStatut(x.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(x.getStatut()));
 		return dto;
 	}
 

@@ -40,10 +40,10 @@ public class RoleServicesImp implements InRoleServices{
 	}
 
 	@Override
-	public Role getRoles(Long id)
+	public RoleDTO getRoles(Long id)
 	{
 		Role role = roleRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("Role", "id", id));
-		return role;
+		return mapToDTO(role);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class RoleServicesImp implements InRoleServices{
 		role.setLibelle(roleDTO.getLibelle());
 		role.setName(roleDTO.getNom());
 		role.setDateModification(new Date());
-		role.setStatut(roleDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		role.setStatut(GlobalConstants.getStatusFromDescription(roleDTO.getStatut()));
 
 		return roleRepository.save(role);
 	}
@@ -124,7 +124,7 @@ public class RoleServicesImp implements InRoleServices{
 		roleDTO.setCode(role.getCode());
 		roleDTO.setLibelle(role.getLibelle());
 		roleDTO.setNom(role.getName());
-		roleDTO.setStatut(role.getStatut().equals("1")? "actif" : "inactif");
+		roleDTO.setStatut(GlobalConstants.getStatusDescription(role.getStatut()));
 		roleDTO.setDateCreation(role.getDateCreation());
 		roleDTO.setDateDesactivation(role.getDateDesactivation());
 		roleDTO.setDateModification(role.getDateModification());

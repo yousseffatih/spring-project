@@ -49,7 +49,7 @@ public interface TypesClientsRepository extends JpaRepository<TypesClients, Long
 	@Query("select "
 			+ " case when count(a)> 0 then true "
 			+ " else false end "
-			+ " from TypesInteraction a "
+			+ " from TypesClients a "
 			+ " where lower(libelle) like lower(:val) "
 			+ " and a.statut not in('-1','-2') "
 			+ " and a.id <> :id ")

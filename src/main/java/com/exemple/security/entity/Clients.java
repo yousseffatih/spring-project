@@ -52,6 +52,8 @@ public class Clients extends ClassEntity{
 	@Size(max = 20)
 	private String fax;
 
+	private String email;
+
 	@Size(max = 200)
 	private String adresse;
 

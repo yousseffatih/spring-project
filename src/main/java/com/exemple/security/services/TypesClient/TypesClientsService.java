@@ -22,7 +22,7 @@ import com.exemple.security.services.parametrage.Numero.InNumeroService;
 
 @Service
 public class TypesClientsService implements InTypesClientService{
-	
+
 	@Autowired
 	private TypesClientsRepository typesClientsRepository;
 
@@ -96,7 +96,7 @@ public class TypesClientsService implements InTypesClientService{
 		typesClients.setDateModification(new Date());
 		return typesClientsRepository.save(typesClients);
 	}
-	
+
 	private TypesClientsDTO mapToDTO(TypesClients x)
 	{
 		TypesClientsDTO dto = new TypesClientsDTO();
@@ -109,5 +109,5 @@ public class TypesClientsService implements InTypesClientService{
 		dto.setStatut(GlobalConstants.getStatusDescription(x.getStatut()));
 		return dto;
 	}
-	
+
 }

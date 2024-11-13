@@ -41,11 +41,10 @@ public class ActivitesController {
 	@Autowired
 	private ActivitesRepository activitesRepository;
 
-
 	@GetMapping("/{id}")
-	private ResponseEntity<Activites> getVille(@PathVariable Long id)
+	private ResponseEntity<ActivitesDTO> getVille(@PathVariable Long id)
 	{
-		Activites activites = activitiesServices.getActivities(id);
+		ActivitesDTO activites = activitiesServices.getActivities(id);
 		return new ResponseEntity<>(activites, HttpStatus.OK);
 	}
 

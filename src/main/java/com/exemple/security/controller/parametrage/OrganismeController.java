@@ -41,9 +41,9 @@ public class OrganismeController {
 
 
 	@GetMapping("/{id}")
-	private ResponseEntity<Organisme> getVille(@PathVariable Long id)
+	private ResponseEntity<OrganismeDTO> getVille(@PathVariable Long id)
 	{
-		Organisme organisme = organismeService.getOrganisme(id);
+		OrganismeDTO organisme = organismeService.getOrganisme(id);
 		return new ResponseEntity<>(organisme, HttpStatus.OK);
 	}
 

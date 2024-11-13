@@ -54,9 +54,9 @@ public class FonctionsServicesImp implements InFonctionsServices{
 	}
 
 	@Override
-	public Fonctions getFonctions(Long id) {
+	public FonctionsDTO getFonctions(Long id) {
 		Fonctions fonctions = fonctionsRepository.findByIdStatut(id).orElseThrow(() -> new ResourceNotFoundException("Fonctions", "id", id));
-		return fonctions;
+		return mapToDTO(fonctions);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class FonctionsServicesImp implements InFonctionsServices{
 		Fonctions fonctions = fonctionsRepository.findById(idFonctions).orElseThrow(() ->  new ResourceNotFoundException("Fonctions", "id", idFonctions));
 		fonctions.setLibelle(fonctionsDTO.getLibelle());
 		fonctions.setDateModification(new Date());
-		fonctions.setStatut(fonctionsDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		fonctions.setStatut(GlobalConstants.getStatusFromDescription(fonctionsDTO.getStatut()));
 		return fonctionsRepository.save(fonctions);
 	}
 
@@ -116,7 +116,7 @@ public class FonctionsServicesImp implements InFonctionsServices{
 		dto.setDateCreation(x.getDateCreation());
 		dto.setDateModification(x.getDateModification());
 		dto.setDateDesactivation(x.getDateDesactivation());
-		dto.setStatut(x.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(x.getStatut()));
 
 		return dto;
 	}

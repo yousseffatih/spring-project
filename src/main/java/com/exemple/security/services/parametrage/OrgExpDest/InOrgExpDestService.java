@@ -10,7 +10,7 @@ public interface InOrgExpDestService {
 
 	List<OrgExpDest> getAllOrgExpDest();
 
-	OrgExpDest getOrgExpDest(Long id);
+	OrgExpDestDTO getOrgExpDest(Long id);
 
 	PageableResponseDTO getAllOrgExpDestPagebal(int pageNo, int pageSize);
 

@@ -7,7 +7,7 @@ import com.exemple.security.playload.dto.PageableResponseDTO;
 import com.exemple.security.playload.dto.TypesClientsDTO;
 
 public interface InTypesClientService {
-	
+
 	public List<TypesClients> getAllTypesClients();
 
 	public TypesClientsDTO getTypesClients(Long id);

@@ -36,10 +36,17 @@ public class InteractionDTO {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dateDesactivation;
 
-	private Long idClients;
-	private Long libelleClients;
+	@JsonFormat(pattern = "dd/MM/yyyy")
+	private Date dateAction;
 
+	@NotNull(message = "Client est obligatoire!")
+	private Long idClients;
+
+	private String libelleClients;
+
+	@NotNull(message = "Type interaction est obligatoire!")
 	private Long idTypesInteraction;
+
 	private String libelleTypesInteraction;
 
 	private String notes;

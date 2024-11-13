@@ -41,9 +41,9 @@ public class OrgExpDestController {
 
 
 	@GetMapping("/{id}")
-	private ResponseEntity<OrgExpDest> getVille(@PathVariable Long id)
+	private ResponseEntity<OrgExpDestDTO> getVille(@PathVariable Long id)
 	{
-		OrgExpDest orgExpDest = orgExpDestService.getOrgExpDest(id);
+		OrgExpDestDTO orgExpDest = orgExpDestService.getOrgExpDest(id);
 		return new ResponseEntity<>(orgExpDest, HttpStatus.OK);
 	}
 

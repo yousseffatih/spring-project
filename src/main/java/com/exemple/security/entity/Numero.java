@@ -1,8 +1,6 @@
 package com.exemple.security.entity;
 
 
-import java.util.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -55,14 +53,4 @@ public class Numero extends ClassEntity{
 	@Column(name="DEFAULTS", length=50)
 	private String defaults;
 
-	public Numero(Long id, String status,String pfix,String valeur,Integer position,String sfix,Organisme organisme,String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
-        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
-        this.id = id;
-        this.status = status;
-        this.pfix = pfix;
-        this.position = position;
-        this.veleur = valeur;
-        this.sfix = sfix;
-        this.organisme = organisme;
-    }
 }

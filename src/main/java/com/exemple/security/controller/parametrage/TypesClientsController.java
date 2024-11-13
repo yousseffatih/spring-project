@@ -16,17 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exemple.security.constants.GlobalConstants;
-import com.exemple.security.entity.Activites;
 import com.exemple.security.entity.TypesClients;
-import com.exemple.security.entity.TypesInteraction;
 import com.exemple.security.playload.MessageResponse;
 import com.exemple.security.playload.dto.ListApis;
 import com.exemple.security.playload.dto.PageableResponseDTO;
 import com.exemple.security.playload.dto.TypesClientsDTO;
-import com.exemple.security.playload.dto.TypesInteractionDTO;
 import com.exemple.security.repository.TypesClientsRepository;
-import com.exemple.security.repository.TypesInteractionRepository;
-import com.exemple.security.services.TypeInstraction.InTypeInstractionService;
 import com.exemple.security.services.TypesClient.InTypesClientService;
 
 import jakarta.validation.Valid;
@@ -66,7 +61,7 @@ public class TypesClientsController {
 	 public ResponseEntity<?> deleteVillesStatus(@PathVariable Long id)
 	 {
 		 typesClientService.deleteTypesClients(id);
-		 return new ResponseEntity<>(new MessageResponse("Type Clients supprimée.","success") , HttpStatus.OK);
+		 return new ResponseEntity<>(new MessageResponse("Type de client supprimé.","success") , HttpStatus.OK);
 	 }
 
 	 @PostMapping
@@ -79,7 +74,7 @@ public class TypesClientsController {
 		}
 
 		typesClientService.addTypesClients(typeClientsDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Type Clients ajoutée.","success"));
+		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Type de client ajouté.","success"));
 	 }
 
 	 @PutMapping("/{id}")
@@ -95,7 +90,7 @@ public class TypesClientsController {
 				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le statut est obligatoire !" , "warning"));
 			}
 			typesClientService.updateTypesClients(id, typesClientsDTO) ;
-	        return new ResponseEntity<>(new MessageResponse("Type Client modifiée","success"),HttpStatus.OK);
+	        return new ResponseEntity<>(new MessageResponse("Type de client modifié","success"),HttpStatus.OK);
 	    }
 
 

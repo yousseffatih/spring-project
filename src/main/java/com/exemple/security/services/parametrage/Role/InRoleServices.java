@@ -10,7 +10,7 @@ public interface InRoleServices {
 
 	List<Role> getAllRoles();
 
-	Role getRoles(Long id);
+	RoleDTO getRoles(Long id);
 
 	PageableResponseDTO getAllRolesPagebal(int pageNo, int pageSize);
 

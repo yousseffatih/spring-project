@@ -29,12 +29,12 @@ import com.exemple.security.repository.AffectationsRepository;
 import com.exemple.security.repository.CourrierRepository;
 import com.exemple.security.repository.EmployesRepository;
 import com.exemple.security.repository.NumeroRepository;
+import com.exemple.security.repository.OrgExpDestRepository;
 import com.exemple.security.repository.ProcessusCourrierRepository;
 import com.exemple.security.repository.ProcessusModelRepository;
+import com.exemple.security.repository.TypeCourriersRepository;
 import com.exemple.security.repository.UserRepository;
 import com.exemple.security.services.parametrage.Numero.InNumeroService;
-import com.exemple.security.services.parametrage.OrgExpDest.OrgExpDestService;
-import com.exemple.security.services.parametrage.TypeCourriers.InTypeCourriersServices;
 
 import jakarta.transaction.Transactional;
 
@@ -53,10 +53,10 @@ public class CourrierServiceImp implements InCourrierServcies{
 
 
 	@Autowired
-	private OrgExpDestService orgExpDestService;
+	private OrgExpDestRepository orgExpDestService;
 
 	@Autowired
-	private InTypeCourriersServices typeCourriersServices;
+	private TypeCourriersRepository typeCourriersServices;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -81,12 +81,12 @@ public class CourrierServiceImp implements InCourrierServcies{
 
 		Courrier courrier = new Courrier();
 
-		OrgExpDest orgExpDestSrc = orgExpDestService.getOrgExpDest(courrierDTO.getIdOrgExpDestSrc());
-		OrgExpDest orgExpDestCible = orgExpDestService.getOrgExpDest(courrierDTO.getIdOrgExpDestCible());
-		Affectations affectations = affectationsRepository .findByIdStatut(courrierDTO.getIdAffectations()).orElseThrow(()-> new ResourceNotFoundException("Affectations", "id", courrierDTO.getIdAffectations()));
+		OrgExpDest orgExpDestSrc = orgExpDestService.findByIdStatut(courrierDTO.getIdOrgExpDestSrc()).orElse(null);
+		OrgExpDest orgExpDestCible = orgExpDestService.findByIdStatut(courrierDTO.getIdOrgExpDestCible()).orElse(null);
+		Affectations affectations = affectationsRepository.findByIdStatut(courrierDTO.getIdAffectations()).orElseThrow(()-> new ResourceNotFoundException("Affectations", "id", courrierDTO.getIdAffectations()));
 		Employes employes = employesRepository.findById(courrierDTO.getIdEmployes()).orElseThrow(()-> new ResourceNotFoundException("Employes", "id", courrierDTO.getIdEmployes()));
 
-		TypeCourriers typeCourriers = typeCourriersServices.getTypeCourriers(courrierDTO.getIdTypeCourriers());
+		TypeCourriers typeCourriers = typeCourriersServices.findByIdStatut(courrierDTO.getIdTypeCourriers()).orElse(null);
 
 		List<ProcessusModel> processusModels = processusModelRepository.findAllByTypeID(courrierDTO.getIdTypeCourriers());
 
@@ -242,12 +242,12 @@ public class CourrierServiceImp implements InCourrierServcies{
 		boolean containsStatutValide = processusCourriers.stream()
 			    .anyMatch(processus -> processus.getStatut() == GlobalConstants.STATUT_VALIDER);
 
-		OrgExpDest orgExpDestSrc = orgExpDestService.getOrgExpDest(courrierDTO.getIdOrgExpDestSrc());
-		OrgExpDest orgExpDestCible = orgExpDestService.getOrgExpDest(courrierDTO.getIdOrgExpDestCible());
+		OrgExpDest orgExpDestSrc = orgExpDestService.findByIdStatut(courrierDTO.getIdOrgExpDestSrc()).orElse(null);
+		OrgExpDest orgExpDestCible = orgExpDestService.findByIdStatut(courrierDTO.getIdOrgExpDestCible()).orElse(null);
 		Affectations affectations = affectationsRepository .findByIdStatut(courrierDTO.getIdAffectations()).orElseThrow(()-> new ResourceNotFoundException("Affectations", "id", courrierDTO.getIdAffectations()));
 		Employes employes = employesRepository.findById(courrierDTO.getIdEmployes()).orElseThrow(()-> new ResourceNotFoundException("Employes", "id", courrierDTO.getIdEmployes()));
 
-		TypeCourriers typeCourriers = typeCourriersServices.getTypeCourriers(courrierDTO.getIdTypeCourriers());
+		TypeCourriers typeCourriers = typeCourriersServices.findByIdStatut(courrierDTO.getIdTypeCourriers()).orElse(null);
 
 		List<ProcessusModel> processusModels = processusModelRepository.findAllByTypeID(courrierDTO.getIdTypeCourriers());
 
@@ -257,7 +257,7 @@ public class CourrierServiceImp implements InCourrierServcies{
 		courrier.setOrgExpDestSrc(orgExpDestSrc);
 		courrier.setEmployes(employes);
 
-		courrier.setStatut(courrierDTO.getStatut().equals("actif") ? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		courrier.setStatut(GlobalConstants.getStatusFromDescription(courrierDTO.getStatut()));
 		courrier.setDateCourrirer(courrierDTO.getDateCourrirer());
 		courrier.setInterne(courrierDTO.getInterne());
 		courrier.setDateModification(new Date());
@@ -317,7 +317,7 @@ public class CourrierServiceImp implements InCourrierServcies{
 		dto.setId(courrier.getId());
 		dto.setCode(courrier.getCode());
 		dto.setLibelle(courrier.getLibelle());
-		dto.setStatut(courrier.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(courrier.getStatut()));
 		dto.setDateCreation(courrier.getDateCreation());
 		dto.setDateDesactivation(courrier.getDateDesactivation());
 		dto.setDateModification(courrier.getDateModification());

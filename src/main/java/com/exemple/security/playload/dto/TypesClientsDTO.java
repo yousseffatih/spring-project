@@ -26,7 +26,6 @@ public class TypesClientsDTO {
 
 	private String code;
 
-
 	private String statut;
 
 	@JsonFormat(pattern = "dd/MM/yyyy")

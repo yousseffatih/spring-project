@@ -12,7 +12,7 @@ public interface InVillesServices {
 
 	 public Villes addVilles(VillesDTO villes);
 
-	 public Villes getVille(Long Id);
+	 public VillesDTO getVille(Long Id);
 
 
 	 public Villes updateVille(Long idVilles ,VillesDTO villes);

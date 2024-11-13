@@ -60,17 +60,4 @@ public class Courrier extends ClassEntity{
 
 	private Date dateEchuance;
 
-
-	public Courrier(Long id,String nCourrier ,OrgExpDest orgExpDestSrc,OrgExpDest orgExpDestCible,Employes employes,Affectations affectations,TypeCourriers typeCourriers,ProcessusCourrier processusCourrier,Date dateDebut,Date dateFin,String libelle, String code, String statut, Date dateCourrirer, Date dateEchuance,Date dateCreation, Date dateModification, Date dateDesactivation) {
-        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
-        this.id = id;
-        this.orgExpDestCible = orgExpDestCible;
-        this.affectations = affectations;
-        this.employes = employes;
-        this.typeCourriers = typeCourriers;
-        this.processusCourrier = processusCourrier;
-        this.dateCourrirer = dateCourrirer;
-        this.dateEchuance = dateEchuance;
-        this.nCourrier = nCourrier;
-    }
 }

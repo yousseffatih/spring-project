@@ -35,18 +35,22 @@ public class ClientsDTO {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dateDesactivation;
 
+	@NotNull(message = "Ville est obligatoire!")
 	private Long idVilles;
 
 	private String libelleVilles;
 
+	@NotNull(message = "Activite est obligatoire!")
 	private Long idActivites;
 
 	private String libelleActivites;
 
+	@NotNull(message = "Type Client est obligatoire!")
 	private Long idTypesClients;
 
 	private String libelleTypesClients;
 
+	@NotNull(message = "Employe est obligatoire!")
 	private Long idEmployes;
 
 	private String LibelleEmployes;
@@ -54,6 +58,8 @@ public class ClientsDTO {
 	private String nom;
 
 	private String prenom;
+
+	private String email;
 
 	private String telephone;
 

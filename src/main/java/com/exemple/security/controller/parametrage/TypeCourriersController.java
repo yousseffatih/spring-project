@@ -40,9 +40,9 @@ public class TypeCourriersController {
 
 
 		@GetMapping("/{id}")
-		private ResponseEntity<TypeCourriers> getVille(@PathVariable Long id)
+		private ResponseEntity<TypeCourriersDTO> getVille(@PathVariable Long id)
 		{
-			TypeCourriers typeCourriers = typeCourriersServices.getTypeCourriers(id);
+			TypeCourriersDTO typeCourriers = typeCourriersServices.getTypeCourriers(id);
 			return new ResponseEntity<>(typeCourriers, HttpStatus.OK);
 		}
 

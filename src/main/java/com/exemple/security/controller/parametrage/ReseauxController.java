@@ -41,9 +41,9 @@ public class ReseauxController {
 
 
 	@GetMapping("/{id}")
-	private ResponseEntity<Reseaux> getVille(@PathVariable Long id)
+	private ResponseEntity<ReseauxDTO> getVille(@PathVariable Long id)
 	{
-		Reseaux activites = reseauxService.getReseaux(id);
+		ReseauxDTO activites = reseauxService.getReseaux(id);
 		return new ResponseEntity<>(activites, HttpStatus.OK);
 	}
 

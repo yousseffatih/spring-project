@@ -39,12 +39,7 @@ public interface ActivitesRepository extends JpaRepository<Activites, Long>{
 			+ " order by a.libelle ")
     Page<Activites> findallStatutsPa(Pageable pageable);
 
-	@Query("select "
-			+ " case when count(a)> 0 then true "
-			+ " else false end "
-			+ " from Activites a "
-			+ " where lower(a.code) = lower(:val)  and a.statut in('0','1') ")
-	boolean existsByCodeAdd(@Param("val") String val);
+
 
 
 	@Query("select "
@@ -54,14 +49,7 @@ public interface ActivitesRepository extends JpaRepository<Activites, Long>{
 			+ " where lower(a.libelle) = lower(:val)  and a.statut in('0','1') ")
 	boolean existsByLibelleAdd(@Param("val") String val);
 
-	@Query("select "
-			+ " case when count(a)> 0 then true "
-			+ " else false end "
-			+ " from Activites a "
-			+ " where lower(code) like lower(:val) "
-			+ " and a.statut not in('-1','-2') "
-			+ " and a.id <> :id ")
-	boolean existsByCodeModif(@Param("val") String val, @Param("id") Long id);
+
 
 	@Query("select "
 			+ " case when count(a)> 0 then true "

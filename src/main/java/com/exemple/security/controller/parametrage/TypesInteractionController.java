@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exemple.security.constants.GlobalConstants;
-import com.exemple.security.entity.Activites;
 import com.exemple.security.entity.TypesInteraction;
 import com.exemple.security.playload.MessageResponse;
 import com.exemple.security.playload.dto.ListApis;
@@ -46,7 +45,7 @@ public class TypesInteractionController {
 	private ResponseEntity<TypesInteractionDTO> getTypesInteraction(@PathVariable Long id)
 	{
 		TypesInteractionDTO typesInteraction = typeInstractionService.getTypesInteraction(id);
-		 
+
 		return new ResponseEntity<>(typesInteraction, HttpStatus.OK);
 	}
 
@@ -66,7 +65,7 @@ public class TypesInteractionController {
 	 public ResponseEntity<?> deleteVillesStatus(@PathVariable Long id)
 	 {
 		 typeInstractionService.deleteTypesInteractionStatut(id);
-		 return new ResponseEntity<>(new MessageResponse("Type Instraction supprimée.","success") , HttpStatus.OK);
+		 return new ResponseEntity<>(new MessageResponse("Type d'instruction supprimé.","success") , HttpStatus.OK);
 	 }
 
 	 @PostMapping
@@ -79,7 +78,7 @@ public class TypesInteractionController {
 		}
 
 		typeInstractionService.addActivites(typesInteractionDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Type Instraction ajoutée.","success"));
+		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Type d'instruction ajouté.","success"));
 	 }
 
 	 @PutMapping("/{id}")
@@ -95,7 +94,7 @@ public class TypesInteractionController {
 				return ResponseEntity.status(GlobalConstants.HTTPSTATUT_RESPONSE_ERORR).body(new MessageResponse("Le statut est obligatoire !" , "warning"));
 			}
 			typeInstractionService.updateTypesInteraction(id, typesInteractionDTO) ;
-	        return new ResponseEntity<>(new MessageResponse("Type Instraction modifiée","success"),HttpStatus.OK);
+	        return new ResponseEntity<>(new MessageResponse("Type d'instruction modifié","success"),HttpStatus.OK);
 	    }
 
 

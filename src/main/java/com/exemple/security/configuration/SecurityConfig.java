@@ -18,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
 
 import lombok.RequiredArgsConstructor;
@@ -37,14 +39,14 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
 	{
 		http
-			 .cors(cors -> cors.configurationSource(request -> {
-	             CorsConfiguration config = new CorsConfiguration();
-	             config.setAllowCredentials(true);
-	             config.addAllowedOrigin("http://localhost:5173");
-	             config.addAllowedHeader("*");
-	             config.addAllowedMethod("*");
-	             return config;
-	         }))
+			.cors(cors -> cors.configurationSource(request -> {
+		            CorsConfiguration config = new CorsConfiguration();
+		            config.setAllowCredentials(true);
+		            config.addAllowedOrigin("http://localhost:5173");
+		            config.addAllowedHeader("*");
+		            config.addAllowedMethod("*");
+		            return config;
+	        	}))
 			.csrf(customizer -> customizer.disable())
 			.authorizeHttpRequests(request -> request
 					.requestMatchers("/api/auth/**").permitAll()
@@ -59,6 +61,14 @@ public class SecurityConfig {
 
 		 return http.build();
 	}
+
+
+	@Bean
+    public HttpFirewall allowDoubleSlashesHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowUrlEncodedDoubleSlash(true);  // Allow double slashes
+        return firewall;
+    }
 
 //	@Bean
 //	public UserDetailsService userDetailsService( ) {

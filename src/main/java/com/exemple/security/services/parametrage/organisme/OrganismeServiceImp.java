@@ -40,10 +40,10 @@ public class OrganismeServiceImp implements InOrganismeService{
 	}
 
 	@Override
-	public Organisme getOrganisme(Long id)
+	public OrganismeDTO getOrganisme(Long id)
 	{
 		Organisme organisme = organismeRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("Organisme", "id", id));
-		return organisme;
+		return mapToDTO(organisme);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class OrganismeServiceImp implements InOrganismeService{
 		organisme.setTelephone(organismeDTO.getTelephone());
 		organisme.setFax(organismeDTO.getFax());
 		organisme.setDateModification(new Date());
-		organisme.setStatut(organismeDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		organisme.setStatut(GlobalConstants.getStatusFromDescription(organismeDTO.getStatut()));
 
 		return organismeRepository.save(organisme);
 	}
@@ -117,7 +117,7 @@ public class OrganismeServiceImp implements InOrganismeService{
 		dto.setDateCreation(x.getDateCreation());
 		dto.setDateModification(x.getDateModification());
 		dto.setDateDesactivation(x.getDateDesactivation());
-		dto.setStatut(x.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(x.getStatut()));
 		dto.setAdresse(x.getAdresse());
 		dto.setTelephone(x.getTelephone());
 		dto.setFax(x.getFax());

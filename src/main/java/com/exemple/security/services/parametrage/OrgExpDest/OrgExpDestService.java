@@ -41,10 +41,10 @@ public class OrgExpDestService implements InOrgExpDestService{
 	}
 
 	@Override
-	public OrgExpDest getOrgExpDest(Long id)
+	public OrgExpDestDTO getOrgExpDest(Long id)
 	{
 		OrgExpDest orgExpDest = orgExpDestRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("OrgExpDest", "id", id));
-		return orgExpDest;
+		return mapToDTO(orgExpDest);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class OrgExpDestService implements InOrgExpDestService{
 		orgExpDest.setEmail(orgExpDestDTO.getEmail());
 		orgExpDest.setTelephone(orgExpDestDTO.getTelephone());
 		orgExpDest.setFax(orgExpDestDTO.getFax());
-		orgExpDest.setStatut(orgExpDestDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		orgExpDest.setStatut(GlobalConstants.getStatusFromDescription(orgExpDestDTO.getStatut()));
 
 		orgExpDest.setDateModification(new Date());
 		return orgExpDestRepository.save(orgExpDest);
@@ -118,7 +118,7 @@ public class OrgExpDestService implements InOrgExpDestService{
 		dto.setDateCreation(x.getDateCreation());
 		dto.setDateModification(x.getDateModification());
 		dto.setDateDesactivation(x.getDateDesactivation());
-		dto.setStatut(x.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(x.getStatut()));
 		dto.setAdresse(x.getAdresse());
 		dto.setTelephone(x.getTelephone());
 		dto.setFax(x.getFax());

@@ -183,20 +183,32 @@ public class ProcessusCourrierServicesImp implements InProcessusCourrierServices
 	{
 		ProcessusCourrier currentPC = processusCourrierRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("Processus Courrier", "id",id));
 
-		ProcessusCourrier nextPC = processusCourrierRepository.findByIdProcessusStatut(id).orElse(null);
+		Courrier courrier = courrierRepository.findById(currentPC.getCourrier().getId()).orElse(null);
 
-		if(currentPC.getStatut().equals(GlobalConstants.STATUT_VALIDER))
+		if(courrier.getStatut() != GlobalConstants.STATUT_CLOTURE)
 		{
-			currentPC.setStatut(GlobalConstants.STATUT_ACTIF);
-			processusCourrierRepository.save(currentPC);
-			if(nextPC != null)
+
+			ProcessusCourrier nextPC = processusCourrierRepository.findByIdProcessusStatut(id).orElse(null);
+
+			if(currentPC.getStatut().equals(GlobalConstants.STATUT_VALIDER))
 			{
-				nextPC.setStatut(GlobalConstants.STATUT_PLANIFIER);
-				processusCourrierRepository.save(nextPC);
+				currentPC.setStatut(GlobalConstants.STATUT_ACTIF);
+				processusCourrierRepository.save(currentPC);
+				if(nextPC != null)
+				{
+					nextPC.setStatut(GlobalConstants.STATUT_PLANIFIER);
+					processusCourrierRepository.save(nextPC);
+				}
+			}else {
+				throw new CustomException("Statut du processus courrier invalide !");
 			}
-		}else {
-			throw new CustomException("Statut du processus courrier invalide !");
+
+		} else {
+
+			throw new CustomException("Statut courrier invalide !");
 		}
+
+
 	}
 
 

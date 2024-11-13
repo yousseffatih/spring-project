@@ -30,10 +30,16 @@ public class ClientsContacts extends ClassEntity{
 	private Fonctions fonctions;
 
 	@ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="CLIENTS_ID")
+	private Clients clients;
+
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="AFFECTATIONS_ID")
 	private Affectations affectations;
 
 	private String nom;
+
+	private String prenom;
 
 	private String email;
 

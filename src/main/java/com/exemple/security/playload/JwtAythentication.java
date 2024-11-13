@@ -16,6 +16,7 @@ public class JwtAythentication {
 	private String emailEmploye;
 	private Long idAgence;
 	private String agence;
+	private String first;
 	private List<String> roles;
 //	private UserPrincipal user;
 

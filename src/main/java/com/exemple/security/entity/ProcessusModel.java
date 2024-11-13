@@ -1,7 +1,5 @@
 package com.exemple.security.entity;
 
-import java.util.Date;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -38,11 +36,5 @@ public class ProcessusModel extends ClassEntity{
 	private Integer orderPM;
 
 
-	public ProcessusModel(Long id,TypeCourriers typeCourriers,Integer duree,Integer order, String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
-        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
-        this.id = id;
-        this.typeCourriers = typeCourriers;
-        this.orderPM = order;
-        this.duree = duree;
-    }
+
 }

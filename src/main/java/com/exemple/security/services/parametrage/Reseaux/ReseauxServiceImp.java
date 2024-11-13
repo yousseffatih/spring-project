@@ -58,9 +58,9 @@ public class ReseauxServiceImp implements InReseauxService{
 	}
 
 	@Override
-	public Reseaux getReseaux(Long id) {
-		Reseaux   reseaux = reseauxRepository.findByIdStatut(id).orElseThrow(() -> new ResourceNotFoundException("Reseaux", "id", id));
-		return reseaux;
+	public ReseauxDTO getReseaux(Long id) {
+		Reseaux  reseaux = reseauxRepository.findByIdStatut(id).orElseThrow(() -> new ResourceNotFoundException("Reseaux", "id", id));
+		return mapToDTO(reseaux);
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class ReseauxServiceImp implements InReseauxService{
 		Reseaux reseaux = reseauxRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("Reseaux", "id", Long.valueOf(id)));
 		reseaux.setLibelle(reseauxDTO.getLibelle());
 		reseaux.setDateModification(new Date());
-		reseaux.setStatut(reseauxDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		reseaux.setStatut(GlobalConstants.getStatusFromDescription(reseauxDTO.getStatut()));
 
 		return reseauxRepository.save(reseaux);
 	}
@@ -121,7 +121,7 @@ public class ReseauxServiceImp implements InReseauxService{
 		dto.setDateCreation(x.getDateCreation());
 		dto.setDateModification(x.getDateModification());
 		dto.setDateDesactivation(x.getDateDesactivation());
-		dto.setStatut(x.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(x.getStatut()));
 		return dto;
 	}
 }

@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exemple.security.entity.User;
+import com.exemple.security.exception.CustomException;
+import com.exemple.security.playload.ChangePassword;
 import com.exemple.security.playload.JwtAythentication;
+import com.exemple.security.playload.MessageResponse;
 import com.exemple.security.playload.RefreshTokenRequest;
 import com.exemple.security.playload.SingInRequest;
 import com.exemple.security.playload.SingUpRequest;
@@ -40,9 +43,34 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/signIn")
-	public ResponseEntity<JwtAythentication> singIn(@Valid @RequestBody SingInRequest singInRequest)
+	public ResponseEntity<?> singIn(@Valid @RequestBody SingInRequest singInRequest)
 	{
-		return ResponseEntity.ok(authentificationServices.singIn(singInRequest));
+//		try {
+//			return ResponseEntity.ok(authentificationServices.singIn(singInRequest));
+//		} catch (CustomException e)
+//		{
+//			//return new ResponseEntity<>(new MessageResponse(e.getMessage(), "warning"), HttpStatus.BAD_REQUEST);
+//			return  ResponseEntity.status(210).body(new MessageResponse(e.getMessage(),"warning"));
+//		}
+
+		JwtAythentication jwtAythentication = authentificationServices.singIn(singInRequest);
+		if(jwtAythentication == null)
+		{
+			return  ResponseEntity.status(451).body(new MessageResponse("Mot de passe réinitialisé !!","warning"));
+		} else {
+			return ResponseEntity.ok(jwtAythentication);
+		}
+	}
+
+	@PostMapping("/changePassword")
+	public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePassword changePassword)
+	{
+		try {
+			authentificationServices.changePassword(changePassword);
+			 return new ResponseEntity<>(new MessageResponse("Mot de passe changé avec succès.","success") , HttpStatus.OK);
+		} catch (CustomException e) {
+			return new ResponseEntity<>(new MessageResponse(e.getMessage(),"warning") , HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@PostMapping("/refresh")

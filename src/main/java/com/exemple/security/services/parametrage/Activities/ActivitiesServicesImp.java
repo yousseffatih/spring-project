@@ -48,10 +48,10 @@ public class ActivitiesServicesImp implements InActivitiesServices{
 	}
 
 	@Override
-	public Activites getActivities(Long id)
+	public ActivitesDTO getActivities(Long id)
 	{
 		Activites activites = activitesRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("Activites", "id", id));
-		return activites;
+		return mapToDTO(activites);
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class ActivitiesServicesImp implements InActivitiesServices{
 	public Activites updateActivites(Long idActivite, ActivitesDTO activitesDTO) {
 		Activites activites = activitesRepository.findById(idActivite).orElseThrow(() ->  new ResourceNotFoundException("Activite", "id", idActivite));
 		activites.setLibelle(activitesDTO.getLibelle());
-		activites.setStatut(activitesDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		activites.setStatut(GlobalConstants.getStatusFromDescription(activitesDTO.getStatut()));
 		activites.setDateModification(new Date());
 		return activitesRepository.save(activites);
 	}
@@ -116,7 +116,7 @@ public class ActivitiesServicesImp implements InActivitiesServices{
 		dto.setDateCreation(x.getDateCreation());
 		dto.setDateModification(x.getDateModification());
 		dto.setDateDesactivation(x.getDateDesactivation());
-		dto.setStatut(x.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(x.getStatut()));
 		return dto;
 	}
 }

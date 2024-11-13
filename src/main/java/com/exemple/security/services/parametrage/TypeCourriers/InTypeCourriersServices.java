@@ -10,7 +10,7 @@ public interface InTypeCourriersServices {
 
 	List<TypeCourriers> getAllTypeCourriers();
 
-	TypeCourriers getTypeCourriers(Long id);
+	TypeCourriersDTO getTypeCourriers(Long id);
 
 	PageableResponseDTO getAllTypeCourriersPagebal(int pageNo, int pageSize);
 

@@ -54,9 +54,9 @@ public class VillesController {
 		}
 
 		@GetMapping("/{id}")
-		private ResponseEntity<Villes> getVille(@PathVariable Long id)
+		private ResponseEntity<VillesDTO> getVille(@PathVariable Long id)
 		{
-			Villes villes = villesServices.getVille(id);
+			VillesDTO villes = villesServices.getVille(id);
 			return new ResponseEntity<>(villes, HttpStatus.OK);
 		}
 

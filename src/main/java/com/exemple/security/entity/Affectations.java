@@ -1,7 +1,5 @@
 package com.exemple.security.entity;
 
-import java.util.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -76,20 +74,4 @@ public class Affectations extends ClassEntity{
 	private String bloque;
 
 
-	public Affectations(Long id , Organisme organismes , Villes villes , Reseaux reseaux, Activites activites, String adresse, String email, String telephone, String fax, String typeAffectations,String bloque, String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation)
-	{
-		super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
-		this.id = id;
-		this.organismes = organismes;
-		this.villes = villes;
-		this.activites = activites;
-		this.reseaux = reseaux;
-		this.activites = activites;
-		this.adresse = adresse;
-		this.email = email;
-		this.telephone = telephone;
-		this.fax = fax;
-		this.typeAffectation = typeAffectations;
-		this.bloque = bloque;
-	}
 }

@@ -60,17 +60,4 @@ public class ProcessusCourrier extends ClassEntity{
 
 	private String pv;
 
-	public ProcessusCourrier(Long id, Courrier courrier,User user,Employes employes,Affectations affectations,ProcessusModel processusModel,Date dateDebut,Date dateFin,String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation,String commentaire , String pv ) {
-        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
-        this.id = id;
-        this.courrier = courrier;
-        this.user = user;
-        this.employes = employes;
-        this.processusModel = processusModel;
-        this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
-        this.commentaire = commentaire;
-        this.pv = pv;
-        this.affectation = affectations;
-    }
 }

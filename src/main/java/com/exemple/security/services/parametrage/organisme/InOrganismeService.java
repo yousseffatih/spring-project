@@ -10,7 +10,7 @@ public interface InOrganismeService {
 
 	List<Organisme> getAllOrganisme();
 
-	Organisme getOrganisme(Long id);
+	OrganismeDTO getOrganisme(Long id);
 
 	PageableResponseDTO getAllOrganismePagebal(int pageNo, int pageSize);
 

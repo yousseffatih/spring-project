@@ -1,7 +1,5 @@
 package com.exemple.security.entity;
 
-import java.util.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -71,19 +69,4 @@ public class Employes extends ClassEntity{
 	private String fax;
 
 
-	public Employes(Long id, Affectations affectations,Fonctions fonctions,String nom, String prenom, String matricule,String cin, String adresse, String telephone, String email,String fax,String libelle,String code,String statut,Date dateCreation,Date dateModification,Date dateDesactivation)
-	{
-		super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
-		this.id=id;
-		this.affectations = affectations;
-		this.fonctions = fonctions;
-		this.nom = nom;
-		this.prenom=prenom;
-		this.matricule = matricule;
-		this.cin =cin;
-		this.adresse = adresse;
-		this.telephone = telephone;
-		this.email = email;
-		this.fax = fax;
-	}
 }

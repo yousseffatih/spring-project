@@ -148,7 +148,7 @@ public class EmplyesServicesImp implements InEmployesService{
 		employes.setPrenom(employesDTO.getPrenom());
 		employes.setMatricule(employesDTO.getMatricule());
 		employes.setFax(employesDTO.getFax());
-		employes.setStatut(employesDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		employes.setStatut(GlobalConstants.getStatusFromDescription(employesDTO.getStatut()));
 
 
 		Employes employes2 = employesRepository.save(employes);
@@ -158,7 +158,7 @@ public class EmplyesServicesImp implements InEmployesService{
 
 
 	private EmployesDTO mapToDTO(Employes employes) {
-		 EmployesDTO dto = new EmployesDTO();
+		EmployesDTO dto = new EmployesDTO();
         dto.setId(employes.getId());
 
         dto.setIdFonctions(employes.getFonctions().getId());
@@ -176,7 +176,7 @@ public class EmplyesServicesImp implements InEmployesService{
         dto.setEmail(employes.getEmail());
         dto.setFax(employes.getFax());
         dto.setTelephone(employes.getTelephone());
-		dto.setStatut(employes.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(employes.getStatut()));
         dto.setCin(employes.getCin());
         dto.setNom(employes.getNom());
 		dto.setPrenom(employes.getPrenom());

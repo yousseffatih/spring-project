@@ -1,7 +1,5 @@
 package com.exemple.security.entity;
 
-import java.util.Date;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,8 +22,4 @@ public class TypesClients extends ClassEntity{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	public TypesClients(Long id, String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
-        super(libelle, code, statut, dateCreation, dateModification, dateDesactivation);
-        this.id = id;
-    }
 }

@@ -10,7 +10,7 @@ public interface InReseauxService {
 
 	public Reseaux addReseaux(ReseauxDTO reseauxDTO);
 
-	public Reseaux getReseaux(Long id);
+	public ReseauxDTO getReseaux(Long id);
 
 	public List<Reseaux> getAllReseaux();
 

@@ -158,7 +158,7 @@ public class AffectationServicesImp implements InAffectationServices{
 		affectations.setAdresse(affectationsDTO.getAdresse());
 		affectations.setTypeAffectation(affectationsDTO.getTypeAffectation());
 		affectations.setBloque(affectationsDTO.getBloque());
-		affectations.setStatut(affectationsDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		affectations.setStatut(GlobalConstants.getStatusFromDescription(affectationsDTO.getStatut()));
 
 
 		Affectations affectations2 = affectationsRepository.save(affectations);
@@ -192,7 +192,7 @@ public class AffectationServicesImp implements InAffectationServices{
         dto.setEmail(affectation.getEmail());
         dto.setTelephone(affectation.getTelephone());
         dto.setFax(affectation.getFax());
-        dto.setStatut(affectation.getStatut().equals("1")? "actif" : "inactif");
+        dto.setStatut(GlobalConstants.getStatusDescription(affectation.getStatut()));
         dto.setTypeAffectation(affectation.getTypeAffectation());
         dto.setBloque(affectation.getBloque());
         return dto;

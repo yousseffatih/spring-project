@@ -54,9 +54,9 @@ public class FonctionsController {
 	}
 
 	@GetMapping("/{id}")
-	private ResponseEntity<Fonctions> getFonctions(@PathVariable Long id)
+	private ResponseEntity<FonctionsDTO> getFonctions(@PathVariable Long id)
 	{
-		Fonctions fonctions = fonctionsServices.getFonctions(id);
+		FonctionsDTO fonctions = fonctionsServices.getFonctions(id);
 		return new ResponseEntity<>(fonctions, HttpStatus.OK);
 	}
 

@@ -31,11 +31,20 @@ public interface ClientsContactsRepository extends JpaRepository<ClientsContacts
 			+ " order by a.libelle ")
 	Optional<ClientsContacts> findByIdStatut(@Param("val") Long val);
 
-	@Query("select a"
-			+ " from ClientsContacts a "
-			+ " where a.statut in ('0','1') "
-			+ " order by a.libelle ")
-    Page<ClientsContacts> findallStatutsPa(Pageable pageable);
+//	@Query("select a"
+//			+ " from ClientsContacts a "
+//			+ " where a.statut in ('0','1') "
+//			+ " order by a.libelle ")
+//    Page<ClientsContacts> findallStatutsPa(Pageable pageable);
+
+
+	@Query(value = """
+				SELECT *
+				FROM clients_contacts c
+				where c.clients_id = :val
+				ORDER BY date_creation DESC
+			""", nativeQuery = true)
+    Page<ClientsContacts> findallStatutsPa(Pageable pageable, @Param("val") Long val);
 
 
 	@Query("select "

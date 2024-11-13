@@ -44,9 +44,9 @@ public class RoleController {
 
 
 	@GetMapping("/{id}")
-	private ResponseEntity<Role> getVille(@PathVariable Long id)
+	private ResponseEntity<RoleDTO> getVille(@PathVariable Long id)
 	{
-		Role role = roleServices.getRoles(id);
+		RoleDTO role = roleServices.getRoles(id);
 		return new ResponseEntity<>(role, HttpStatus.OK);
 	}
 

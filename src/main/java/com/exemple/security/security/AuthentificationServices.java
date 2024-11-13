@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.exemple.security.entity.User;
+import com.exemple.security.exception.CustomException;
+import com.exemple.security.playload.ChangePassword;
 import com.exemple.security.playload.JwtAythentication;
 import com.exemple.security.playload.RefreshTokenRequest;
 import com.exemple.security.playload.ResourceNotFoundExceptionUsername;
@@ -55,8 +57,14 @@ public class AuthentificationServices {
 	{
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(singInRequest.getEmail(), singInRequest.getPassword()));
 
-		User user = userRepository.findByUsername(singInRequest.getEmail())
+		User user = userRepository.findByUsernameStatut(singInRequest.getEmail())
 				.orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+		if(user.getFirst().equals("1"))
+		{
+			// throw new CustomException("Mot de passe réinitialisé !!");
+			return null;
+		}
 
 		String jwt = jwtService.generateToken(user.getUsername());
 		String refreshJwt = jwtService.generateRefreshToken(new HashMap<>(),user.getUsername());
@@ -70,10 +78,30 @@ public class AuthentificationServices {
 		jwtAythentication.setIdAgence(user.getEmployes().getAffectations().getId());
 		jwtAythentication.setAgence(user.getEmployes().getAffectations().getLibelle());
 		jwtAythentication.setRoles(user.getRoles().stream().map(role -> role.getRole().getName()).collect(Collectors.toList()));
+		jwtAythentication.setFirst(user.getFirst());
 		jwtAythentication.setToken(jwt);
+
 		jwtAythentication.setRefrechToken(refreshJwt);
 
 		return jwtAythentication;
+	}
+
+	public void changePassword(ChangePassword changePassword) {
+		User user = userRepository.findByUsernameStatut(changePassword.getUsername())
+				.orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+		if(!passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword()))
+		{
+			 throw new CustomException("Votre mot de passe est incorrect !");
+		}
+		else
+		{
+			user.setDateModification(new Date());
+			user.setFirst("0");
+			user.setPassword(passwordEncoder.encode(changePassword.getNewPassword()));
+
+			userRepository.save(user);
+		}
 	}
 
 
@@ -82,7 +110,6 @@ public class AuthentificationServices {
 		String token = refreshTokenRequest.getToken();
 		String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
 		User user = getUser(userEmail);
-
 
 		if(user == null )
 		{
@@ -108,7 +135,7 @@ public class AuthentificationServices {
 
 	public User getUser(String username)
 	{
-		User user = userRepository.findByUsername(username).orElseThrow(()-> new ResourceNotFoundExceptionUsername("user", "username", username));
+		User user = userRepository.findByUsernameStatut(username).orElseThrow(()-> new ResourceNotFoundExceptionUsername("user", "username", username));
 		return user;
 	}
 }

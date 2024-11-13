@@ -3,7 +3,6 @@ package com.exemple.security.entity;
 
 
 
-import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -43,17 +42,11 @@ public class User extends ClassEntity{
 	@Column(name = "PASSWORD", length = 100)
     private String password;
 
+	@Size(max = 100)
+	private String first;
+
     @ElementCollection
     private List<UserRole> roles;
-
-    public User(Long id,Employes employes, String username ,String password,List<UserRole> roles, String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
-    	super(libelle,code, statut, dateCreation, dateModification, dateDesactivation);
-    	this.id = id;
-    	this.employes = employes;
-    	this.username = username;
-    	this.password = password;
-    	this.roles = roles;
-    }
 
 }
 

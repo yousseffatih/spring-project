@@ -16,4 +16,6 @@ public class ListApis {
 	private String libelle;
 
 	private String code;
+	
+	private String etat;
 }

@@ -10,7 +10,7 @@ public interface InActivitiesServices {
 
 	public List<Activites> getAllActivities();
 
-	public Activites getActivities(Long id);
+	public ActivitesDTO getActivities(Long id);
 
 	public PageableResponseDTO getAllActivitesPagebal(int pageNo, int pageSize);
 

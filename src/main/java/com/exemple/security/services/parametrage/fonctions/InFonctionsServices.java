@@ -10,7 +10,7 @@ public interface InFonctionsServices {
 
 	Fonctions addFonctions(FonctionsDTO fonctionsDTO);
 
-	Fonctions getFonctions(Long id);
+	FonctionsDTO getFonctions(Long id);
 
 	List<Fonctions> getAllFonctions();
 

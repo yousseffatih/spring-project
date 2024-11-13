@@ -44,10 +44,10 @@ public class TypeCourriersServicesImp implements InTypeCourriersServices{
 	}
 
 	@Override
-	public TypeCourriers getTypeCourriers(Long id)
+	public TypeCourriersDTO getTypeCourriers(Long id)
 	{
 		TypeCourriers typeCourriers = typeCourriersRepository.findByIdStatut(id).orElseThrow(()-> new ResourceNotFoundException("TypeCourriers", "id", id));
-		return typeCourriers;
+		return mapToDTO(typeCourriers);
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class TypeCourriersServicesImp implements InTypeCourriersServices{
 		TypeCourriers typeCourriers = typeCourriersRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("TypeCourriers", "id", id));
 		typeCourriers.setLibelle(typeCourriersDTO.getLibelle());
 		typeCourriers.setDateModification(new Date());
-		typeCourriers.setStatut(typeCourriersDTO.getStatut().equals("actif")? GlobalConstants.STATUT_ACTIF : GlobalConstants.STATUT_INACTIF);
+		typeCourriers.setStatut(GlobalConstants.getStatusFromDescription(typeCourriersDTO.getStatut()));
 
 		return typeCourriersRepository.save(typeCourriers);
 	}
@@ -113,7 +113,7 @@ public class TypeCourriersServicesImp implements InTypeCourriersServices{
 		dto.setDateCreation(x.getDateCreation());
 		dto.setDateModification(x.getDateModification());
 		dto.setDateDesactivation(x.getDateDesactivation());
-		dto.setStatut(x.getStatut().equals("1")? "actif" : "inactif");
+		dto.setStatut(GlobalConstants.getStatusDescription(x.getStatut()));
 		return dto;
 	}
 }

@@ -1,7 +1,5 @@
 package com.exemple.security.entity;
 
-import java.util.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,10 +30,4 @@ public class Role extends ClassEntity{
 	@Column(name = "NAME", length = 100)
 	private String name;
 
-
-	public Role(Long id, String name,String libelle, String code, String statut, Date dateCreation, Date dateModification, Date dateDesactivation) {
-        super(libelle,code, statut, dateCreation, dateModification, dateDesactivation);
-        this.id = id;
-        this.name = name;
-    }
 }

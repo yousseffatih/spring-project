@@ -185,7 +185,8 @@ public class ProcessusCourrierServicesImp implements InProcessusCourrierServices
 
 		Courrier courrier = courrierRepository.findById(currentPC.getCourrier().getId()).orElse(null);
 
-		if(courrier.getStatut() != GlobalConstants.STATUT_CLOTURE)
+		System.out.println(courrier.getStatut().toString());
+		if(!courrier.getStatut().equals(GlobalConstants.STATUT_CLOTURE))
 		{
 
 			ProcessusCourrier nextPC = processusCourrierRepository.findByIdProcessusStatut(id).orElse(null);

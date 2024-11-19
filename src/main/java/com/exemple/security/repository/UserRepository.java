@@ -75,5 +75,22 @@ public interface UserRepository extends JpaRepository<User, Long>{
 			+ " and a.statut not in('-1','-2') "
 			+ " and a.id <> :id ")
 	boolean existsByLibelleModif(@Param("val") String val, @Param("id") Long id);
-
+	
+	@Query(value = """ 
+			SELECT 
+			CASE WHEN COUNT(u)> 0 THEN true ELSE false END 
+			from users u
+			WHERE employes_id = :id
+			""", nativeQuery = true)
+	boolean existsByEmployerAdd(@Param("id") Long id);
+	
+	@Query(value = """ 
+			SELECT 
+			CASE WHEN COUNT(u)> 0 THEN true ELSE false END 
+			from users u
+			WHERE employes_id = :id
+			AND u.id <> :idUser
+			""", nativeQuery = true)
+	boolean existsByEmployerModif(@Param("id") Long id , @Param("idUser") Long idUser);
+	
 }

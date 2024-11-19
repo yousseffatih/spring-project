@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.exemple.security.entity.Rapport;
 import com.exemple.security.playload.dto.ListApis;
 import com.exemple.security.playload.dto.RapportBody;
-import com.exemple.security.playload.dto.RapportDTO;
 import com.exemple.security.services.rapport.InRapportService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +33,7 @@ public class RapportController {
 	@GetMapping
 	public List<Rapport> getAllRapports()
 	{
-		List<Rapport> rapports  = rapportService.getAllRapports();
+		List<Rapport> rapports = rapportService.getAllRapports();
 		return rapports;
 	}
 

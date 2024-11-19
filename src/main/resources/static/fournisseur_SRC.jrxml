@@ -1,0 +1,363 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Fournisseur_SRC" language="java" columnCount="1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4e1d2ae9-0603-4e56-8886-3aae68dfa686">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PROJECT_DB.jrdax"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	
+	<parameter name="au" class="java.lang.String"/>
+	<parameter name="du" class="java.lang.String"/>
+	
+	<query language="sql"><![CDATA[SELECT
+    c.id,
+    c.libelle,
+    c.code,
+    CASE
+        WHEN c.statut = '-1' THEN 'Supprimé'
+        WHEN c.statut = '0' THEN 'Inactif'
+        WHEN c.statut = '1' THEN 'Actif'
+        WHEN c.statut = '3' THEN 'Validé'
+        WHEN c.statut = '4' THEN 'Cloturé'
+        ELSE c.statut
+    END AS statut,
+    TO_CHAR(c.date_creation, 'dd/mm/yyyy') AS date_creation,
+    TO_CHAR(c.date_modification, 'dd/mm/yyyy') AS date_modification,
+    TO_CHAR(c.date_desactivation, 'dd/mm/yyyy') AS date_desactivation,
+    oed.id AS idOrgExpDestCible,
+    oed.libelle AS libelleOrgExpDestCible,
+    oed1.id AS idOrgExpDestSrc,
+    oed1.libelle AS libelleOrgExpDestSrc,
+    a.id AS idAffectations,
+    a.libelle AS libelleAffectations,
+    e.id AS idEmployes,
+    e.nom AS nomEmployes,
+    e.libelle AS libelleEmployes,
+    tc.id AS idTypeCourriers,
+    tc.libelle AS libelleTypeCourriers,
+    pc.id AS idProcessusCourrier,
+    pc.libelle AS libelleProcessusCourrier,
+    c.interne,
+    TO_CHAR(c.date_courrirer, 'dd/mm/yyyy') AS date_courrirer,
+    TO_CHAR(c.date_echuance, 'dd/mm/yyyy') AS date_echuance,
+    c.n_courrier
+FROM
+    courrier c
+    LEFT JOIN employes e ON c.employes_id = e.id
+    JOIN processus_courrier pc ON c.processus_courrier_id = pc.id
+    JOIN processus_model pm ON pc.processus_model_id = pm.id
+    LEFT JOIN affectations a ON c.affectations_id = a.id
+    JOIN org_exp_dest oed1 ON c.org_exp_dest_src_id = oed1.id
+    JOIN org_exp_dest oed ON c.org_exp_dest_cible_id = oed.id
+    JOIN type_courriers tc ON c.type_courriers_id = tc.id
+WHERE
+    c.statut NOT IN ('-2')
+    AND c.date_courrirer BETWEEN TO_DATE($P{du}, 'dd/mm/yyyy') AND TO_DATE($P{au}, 'dd/mm/yyyy')
+ORDER BY
+    c.date_creation DESC;]]></query>
+	<field name="id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="id"/>
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="courrier"/>
+	</field>
+	<field name="libelle" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="libelle"/>
+		<property name="com.jaspersoft.studio.field.label" value="libelle"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="courrier"/>
+	</field>
+	<field name="code" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="code"/>
+		<property name="com.jaspersoft.studio.field.label" value="code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="courrier"/>
+	</field>
+	<field name="statut" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="statut"/>
+		<property name="com.jaspersoft.studio.field.label" value="statut"/>
+	</field>
+	<field name="date_creation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="date_creation"/>
+		<property name="com.jaspersoft.studio.field.label" value="date_creation"/>
+	</field>
+	<field name="date_modification" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="date_modification"/>
+		<property name="com.jaspersoft.studio.field.label" value="date_modification"/>
+	</field>
+	<field name="date_desactivation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="date_desactivation"/>
+		<property name="com.jaspersoft.studio.field.label" value="date_desactivation"/>
+	</field>
+	<field name="idorgexpdestcible" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="idorgexpdestcible"/>
+		<property name="com.jaspersoft.studio.field.label" value="idorgexpdestcible"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="org_exp_dest"/>
+	</field>
+	<field name="libelleorgexpdestcible" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="libelleorgexpdestcible"/>
+		<property name="com.jaspersoft.studio.field.label" value="libelleorgexpdestcible"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="org_exp_dest"/>
+	</field>
+	<field name="idorgexpdestsrc" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="idorgexpdestsrc"/>
+		<property name="com.jaspersoft.studio.field.label" value="idorgexpdestsrc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="org_exp_dest"/>
+	</field>
+	<field name="libelleorgexpdestsrc" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="libelleorgexpdestsrc"/>
+		<property name="com.jaspersoft.studio.field.label" value="libelleorgexpdestsrc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="org_exp_dest"/>
+	</field>
+	<field name="idaffectations" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="idaffectations"/>
+		<property name="com.jaspersoft.studio.field.label" value="idaffectations"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="affectations"/>
+	</field>
+	<field name="libelleaffectations" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="libelleaffectations"/>
+		<property name="com.jaspersoft.studio.field.label" value="libelleaffectations"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="affectations"/>
+	</field>
+	<field name="idemployes" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="idemployes"/>
+		<property name="com.jaspersoft.studio.field.label" value="idemployes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="employes"/>
+	</field>
+	<field name="nomemployes" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nomemployes"/>
+		<property name="com.jaspersoft.studio.field.label" value="nomemployes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="employes"/>
+	</field>
+	<field name="libelleemployes" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="libelleemployes"/>
+		<property name="com.jaspersoft.studio.field.label" value="libelleemployes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="employes"/>
+	</field>
+	<field name="idtypecourriers" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="idtypecourriers"/>
+		<property name="com.jaspersoft.studio.field.label" value="idtypecourriers"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="type_courriers"/>
+	</field>
+	<field name="libelletypecourriers" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="libelletypecourriers"/>
+		<property name="com.jaspersoft.studio.field.label" value="libelletypecourriers"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="type_courriers"/>
+	</field>
+	<field name="idprocessuscourrier" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="idprocessuscourrier"/>
+		<property name="com.jaspersoft.studio.field.label" value="idprocessuscourrier"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="processus_courrier"/>
+	</field>
+	<field name="libelleprocessuscourrier" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="libelleprocessuscourrier"/>
+		<property name="com.jaspersoft.studio.field.label" value="libelleprocessuscourrier"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="processus_courrier"/>
+	</field>
+	<field name="interne" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="interne"/>
+		<property name="com.jaspersoft.studio.field.label" value="interne"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="courrier"/>
+	</field>
+	<field name="date_courrirer" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="date_courrirer"/>
+		<property name="com.jaspersoft.studio.field.label" value="date_courrirer"/>
+	</field>
+	<field name="date_echuance" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="date_echuance"/>
+		<property name="com.jaspersoft.studio.field.label" value="date_echuance"/>
+	</field>
+	<field name="n_courrier" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="n_courrier"/>
+		<property name="com.jaspersoft.studio.field.label" value="n_courrier"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="courrier"/>
+	</field>
+	<group name="Fournisseur_SRC">
+		<expression><![CDATA[$F{libelleorgexpdestsrc}]]></expression>
+		<groupHeader>
+			<band height="36">
+				<element kind="textField" uuid="94f46fc3-0c8b-4117-8380-f1de1a396345" x="0" y="0" width="780" height="20" vTextAlign="Middle">
+					<expression><![CDATA[$F{libelleorgexpdestsrc}]]></expression>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</element>
+				<element kind="staticText" uuid="95872a4e-0723-4dbe-81f1-1a7b670403f7" mode="Opaque" x="0" y="20" width="68" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[N°courrier]]></text>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+				<element kind="staticText" uuid="aa6e7b75-0be1-410a-aa8e-f2e7b77b1ea5" mode="Opaque" x="68" y="20" width="60" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[Type]]></text>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+				<element kind="staticText" uuid="b4c23de0-38f4-4c19-a489-2507f50f4107" mode="Opaque" x="128" y="20" width="90" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[Fournisseur SRC]]></text>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+				<element kind="staticText" uuid="deb71bb4-1ec3-4c8d-b51d-fa2c7706c71c" mode="Opaque" x="218" y="20" width="90" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[Fournisseur CBL]]></text>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+				<element kind="staticText" uuid="e901f4e0-ef31-49f4-8750-97e2e5c13ec8" mode="Opaque" x="308" y="20" width="70" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[date_courrirer]]></text>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+				<element kind="staticText" uuid="2e08fdf5-8096-4bbf-a93e-d94b280200f5" mode="Opaque" x="378" y="20" width="70" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[Affectations]]></text>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+				<element kind="staticText" uuid="649f9d68-5d4b-4d89-a6dd-339eac086d61" mode="Opaque" x="448" y="20" width="118" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[Employé]]></text>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+				<element kind="staticText" uuid="91b41fdc-5005-47bd-98fb-0e7ddd86fccd" mode="Opaque" x="566" y="20" width="80" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[Libelle]]></text>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+				<element kind="staticText" uuid="538df5cc-7204-4f0c-a2d8-ef34b20cd980" mode="Opaque" x="646" y="20" width="57" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[Statut]]></text>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+				<element kind="staticText" uuid="6296ac07-b6aa-4a74-9a1e-9ed055e332e1" mode="Opaque" x="703" y="20" width="99" height="16" backcolor="#CCFFCC" bold="true" vTextAlign="Middle">
+					<text><![CDATA[Étape]]></text>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="0.25"/>
+					</box>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="16">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</band>
+		</groupFooter>
+	</group>
+	<background splitType="Stretch"/>
+	<title height="79" splitType="Stretch"/>
+	<pageHeader height="35" splitType="Stretch"/>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<element kind="textField" uuid="1e6031f1-6d76-41a4-8722-0fbcc59e8053" x="0" y="0" width="68" height="16" linkType="None" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{n_courrier}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="36d6c7cd-7297-4cef-bdca-434881dade49" x="68" y="0" width="60" height="16" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{libelletypecourriers}]]></expression>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="519d14e4-44a2-41d0-99b2-98304ac5d2f9" x="128" y="0" width="90" height="16" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{libelleorgexpdestsrc}]]></expression>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="48514435-c0d2-403a-b1be-186a8c73861b" x="218" y="0" width="90" height="16" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{libelleorgexpdestcible}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="7e0b36e3-26bb-43d9-8e45-77fae492638f" x="308" y="0" width="70" height="16" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{date_courrirer}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="6c31ac54-3021-473b-8d73-8b91dee420e1" x="378" y="0" width="70" height="16" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{libelleaffectations}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="d6187186-ff22-4b9f-9970-81f5c8968332" x="448" y="0" width="118" height="16" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{libelleemployes}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="073f785a-2a88-4ea3-9048-bf7cbbd0f05a" x="566" y="0" width="80" height="16" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{libelle}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="e061f6c1-6465-47aa-8e18-854ab4617836" x="646" y="0" width="57" height="16" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{statut}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="88a67e7e-e16f-411b-966b-e77b48bd8962" x="703" y="0" width="99" height="16" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{libelleprocessuscourrier}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.25"/>
+				</box>
+			</element>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</detail>
+</jasperReport>

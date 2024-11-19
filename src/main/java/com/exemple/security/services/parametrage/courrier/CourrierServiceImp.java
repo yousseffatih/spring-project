@@ -111,6 +111,7 @@ public class CourrierServiceImp implements InCourrierServcies{
 			numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
 
 			numeroRepository.save(numero);
+			
 			courrier.setCode(numeroService.genrateNumero(numero));
 		}
 
@@ -128,10 +129,11 @@ public class CourrierServiceImp implements InCourrierServcies{
 			List<Numero> nums = numeroRepository.findByCode("ProcessusCourrier");
 			if(nums != null && !nums.isEmpty())
 			{
-				Numero numero = numeros.get(0);
+				Numero numero = nums.get(0);
 				numero.setVeleur((Integer.parseInt(numero.getVeleur())  + 1)+ "");
 
 				numeroRepository.save(numero);
+				System.out.println(numeroService.genrateNumero(numero).toString());
 				processusCourrier.setCode(numeroService.genrateNumero(numero));
 			}
 
@@ -167,6 +169,14 @@ public class CourrierServiceImp implements InCourrierServcies{
 		List<Courrier> courriers = courrierRepository.findAllWithStatus();
 		List<CourrierDTO> courrierDTOs = new ArrayList<>();
 		courrierDTOs = courriers.stream().map(e -> maptoDto(e)).collect(Collectors.toList());
+		return courrierDTOs;
+	}
+	
+	@Override
+	public List<CourrierDTO> getListCourrierByEmployer(Long idEmploye)
+	{
+		List<Courrier> courriers = courrierRepository.getListCourrierByEmployer(idEmploye);
+		List<CourrierDTO> courrierDTOs = courriers.stream().map(c-> maptoDto(c)).collect(Collectors.toList());
 		return courrierDTOs;
 	}
 
@@ -279,7 +289,6 @@ public class CourrierServiceImp implements InCourrierServcies{
 			{
 				index += 1;
 				ProcessusCourrier processusCourrier = new ProcessusCourrier();
-				processusCourrier.setCode(courrier2.getCode()+"_"+ GlobalConstants.PFIX_PROCESSUS_COURRIER + index);
 
 				processusCourrier.setLibelle(courrierDTO.getLibelle()+ "_"+ GlobalConstants.PFIX_PROCESSUS_COURRIER + index);
 				processusCourrier.setEmployes(employes);
@@ -330,9 +339,13 @@ public class CourrierServiceImp implements InCourrierServcies{
 
 		dto.setIdTypeCourriers(courrier.getTypeCourriers().getId());
 		dto.setLibelleTypeCourriers(courrier.getTypeCourriers().getLibelle());
+		
+		if(courrier.getProcessusCourrier() != null)
+		{
 
-		dto.setIdTypeProcessusCourrier(courrier.getProcessusCourrier().getId());
-		dto.setLibelleTypeProcessusCourrier(courrier.getProcessusCourrier().getLibelle());
+			dto.setIdTypeProcessusCourrier(courrier.getProcessusCourrier().getId());
+			dto.setLibelleTypeProcessusCourrier(courrier.getProcessusCourrier().getLibelle());
+		}
 
 		if(courrier.getEmployes() != null) {
 			dto.setIdEmployes(courrier.getEmployes().getId());
@@ -343,9 +356,6 @@ public class CourrierServiceImp implements InCourrierServcies{
 			dto.setIdAffectations(courrier.getAffectations().getId());
 			dto.setLibelleAffectations(courrier.getAffectations().getLibelle());
 		}
-
-		dto.setIdProcessusCourrier(courrier.getProcessusCourrier().getId());
-		dto.setLibelleAffectations(courrier.getProcessusCourrier().getLibelle());
 
 		dto.setNCourrier(courrier.getNCourrier());
 		dto.setDateCourrirer(courrier.getDateCourrirer());

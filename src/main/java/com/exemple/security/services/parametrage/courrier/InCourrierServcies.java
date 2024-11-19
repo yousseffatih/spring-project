@@ -22,4 +22,6 @@ public interface InCourrierServcies {
 
 	CourrierDTO getCourrierId(Long id);
 
+	List<CourrierDTO> getListCourrierByEmployer(Long idEmploye);
+
 }

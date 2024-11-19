@@ -24,7 +24,6 @@ public interface EmployesRepository extends JpaRepository<Employes, Long>{
 			+ " order by e.libelle ")
 	List<Employes> findAllWithStatus();
 
-
 	@Query("select e"
 			+ " from Employes e "
 			+ " where (e.statut = '1' OR e.statut = '0')"
@@ -36,7 +35,7 @@ public interface EmployesRepository extends JpaRepository<Employes, Long>{
 			+ " where e.statut in ('0','1') "
 			+ " order by e.libelle ")
     Page<Employes> findallStatutsPa(Pageable pageable);
-
+	
 	@Query("select "
 			+ " case when count(e)> 0 then true "
 			+ " else false end "

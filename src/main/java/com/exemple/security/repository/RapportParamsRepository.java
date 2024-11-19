@@ -50,7 +50,8 @@ public interface RapportParamsRepository extends JpaRepository<RapportsParams, L
 	@Query(value = """
 			SELECT * FROM public.rapports_params
 			WHERE statut IN ('1','0')
-			AND rapport_id = :val
+			AND rapport_id = 1
+			ORDER BY order_param
 			""", nativeQuery = true )
     List<RapportsParams> findallStatutsPa(@Param("val") Long val);
 

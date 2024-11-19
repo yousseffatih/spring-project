@@ -1,6 +1,7 @@
 package com.exemple.security.playload.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -46,4 +47,6 @@ public class RapportsParamsDTO {
 	private String obligatoire;
 
 	private String defaultValue;
+	
+	private List<Object> listDefault;
 }

@@ -1,5 +1,6 @@
 package com.exemple.security.entity;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -40,4 +41,5 @@ public class RapportsParams extends ClassEntity{
 	private String obligatoire;
 
 	private String defaultValue;
+	
 }

@@ -31,7 +31,6 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 
 
 
-
 @Service
 public class RapportService implements InRapportService{
 
@@ -56,7 +55,7 @@ public class RapportService implements InRapportService{
 
 	@Override
 	public byte[] exportRaport(RapportBody rapportBody) throws FileNotFoundException , JRException {
-		File file = ResourceUtils.getFile("src/main/resources/static/"+ rapportBody.getLibelleRapport() +".jrxml");
+		File file = ResourceUtils.getFile("classpath:static/"+ rapportBody.getLibelleRapport() +".jrxml");
 	    JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
 
     	JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, rapportBody.getParams(), getDataSource());
@@ -76,7 +75,6 @@ public class RapportService implements InRapportService{
 	    return outputStream.toByteArray();
 	}
 	
-	
 
 	private java.sql.Connection getDataSource() {
         try {
@@ -87,8 +85,6 @@ public class RapportService implements InRapportService{
     }
 
 	
-
-
 //	@Override
 //	public void exportRaport() throws FileNotFoundException , JRException {
 //

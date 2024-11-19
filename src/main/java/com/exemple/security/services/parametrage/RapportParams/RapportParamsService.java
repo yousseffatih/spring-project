@@ -6,10 +6,18 @@ import java.util.stream.Collectors;
 
 import org.apache.batik.bridge.AbstractSVGGradientElementBridge.Stop;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.exemple.security.constants.GlobalConstants;
 import com.exemple.security.entity.Numero;
@@ -22,6 +30,8 @@ import com.exemple.security.repository.NumeroRepository;
 import com.exemple.security.repository.RapportParamsRepository;
 import com.exemple.security.repository.RapportRepository;
 import com.exemple.security.services.parametrage.Numero.InNumeroService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class RapportParamsService implements InRapportParamsService{
@@ -37,6 +47,12 @@ public class RapportParamsService implements InRapportParamsService{
 
 	@Autowired
 	private NumeroRepository numeroRepository;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	@Autowired
+	private HttpServletRequest request;
 
 	@Override
 	public List<RapportsParams> getAllRapportsParams() {
@@ -140,8 +156,42 @@ public class RapportParamsService implements InRapportParamsService{
 		dto.setOrderParam(x.getOrderParam());
 		dto.setObligatoire(x.getObligatoire());
 		dto.setDefaultValue(x.getDefaultValue());
+		
+		if(x.getApiParam() != null && !x.getApiParam().isEmpty())
+		{
+			dto.setListDefault(getInternalApiData(x.getApiParam()));
+		}
 
 		return dto;
+	}
+	
+	private  List<Object> getInternalApiData(String url) {
+		String localUrlString = "http://localhost:8080";
+	    String token = extractTokenFromRequest();
+	    if (token == null) {
+	        throw new IllegalStateException("JWT token not found in security context");
+	    }
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setBearerAuth(token);
+	    HttpEntity<String> entity = new HttpEntity<>(headers);
+
+	    ResponseEntity<List<Object>> response = restTemplate.exchange(
+	            (localUrlString + url),
+	            HttpMethod.GET,
+	            entity,
+	            new ParameterizedTypeReference<List<Object>>() {}
+	    );
+
+	    return response.getBody();
+	}
+
+	private String extractTokenFromRequest() {
+	    String bearerToken = request.getHeader("Authorization");
+	    if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+	        return bearerToken.substring(7);
+	    }
+	    return null;
 	}
 
 	

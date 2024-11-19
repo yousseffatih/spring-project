@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exemple.security.constants.GlobalConstants;
+import com.exemple.security.entity.User;
 import com.exemple.security.exception.CustomException;
 import com.exemple.security.playload.MessageResponse;
+import com.exemple.security.playload.ResourceNotFoundException;
 import com.exemple.security.playload.dto.CourrierDTO;
 import com.exemple.security.playload.dto.GetCourrierBody;
 import com.exemple.security.playload.dto.PageableResponseDTO;
 import com.exemple.security.repository.CourrierRepository;
+import com.exemple.security.repository.UserRepository;
 import com.exemple.security.services.parametrage.courrier.InCourrierServcies;
 
 import jakarta.validation.Valid;
@@ -36,6 +39,9 @@ public class CourriersController{
 
 	@Autowired
 	private CourrierRepository courrierRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 
 
@@ -61,27 +67,35 @@ public class CourriersController{
 			return new ResponseEntity<>(affectations , HttpStatus.OK);
 		}
 
-	 @PostMapping("/allFiltred")
-		public ResponseEntity<?> getAllAll(@RequestBody GetCourrierBody getCourrierBody,
-				@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
-				@RequestParam(value = "pageSize" , defaultValue = "5" , required = false) int pageSize
-		)
-		{
-		 System.out.println(getCourrierBody.toString());
-			PageableResponseDTO list = courrierServcies.filterCourriers(
-					getCourrierBody.getNCourrier(),
-					getCourrierBody.getIdOrgExpDestSrc(),
-					getCourrierBody.getIdOrgExpDestCible(),
-					getCourrierBody.getDateDebut(),
-					getCourrierBody.getDateFin(),
-					getCourrierBody.getIdProcessusModel(),
-					getCourrierBody.getTypeCourriersId(),
-					pageNo,pageSize
-					);
-			return new ResponseEntity<>(list , HttpStatus.OK);
-		}
-
-
+	@PostMapping("/allFiltred")
+	public ResponseEntity<?> getAllAll(@RequestBody GetCourrierBody getCourrierBody,
+			@RequestParam(value = "pageNo" , defaultValue = "0", required = false) int pageNo,
+			@RequestParam(value = "pageSize" , defaultValue = "5" , required = false) int pageSize
+	)
+	{
+	 System.out.println(getCourrierBody.toString());
+		PageableResponseDTO list = courrierServcies.filterCourriers(
+				getCourrierBody.getNCourrier(),
+				getCourrierBody.getIdOrgExpDestSrc(),
+				getCourrierBody.getIdOrgExpDestCible(),
+				getCourrierBody.getDateDebut(),
+				getCourrierBody.getDateFin(),
+				getCourrierBody.getIdProcessusModel(),
+				getCourrierBody.getTypeCourriersId(),
+				pageNo,pageSize
+				);
+		return new ResponseEntity<>(list , HttpStatus.OK);
+	}
+	
+	@GetMapping("/idUser={id}")
+	public List<CourrierDTO> getListCourriersByEmployes(@PathVariable Long id)
+	{
+		User user = userRepository.findByIdStatut(id).orElseThrow(() -> new ResourceNotFoundException("Utilisateur", "id", id));
+		Long idEmployer = user.getEmployes().getId();
+		List<CourrierDTO> courrierDTOs = courrierServcies.getListCourrierByEmployer(idEmployer);
+		return courrierDTOs;
+	}
+	
 	@PostMapping("/add")
 	public ResponseEntity<?> addCourries( @Valid @RequestBody CourrierDTO courrierDTO)
 	{
